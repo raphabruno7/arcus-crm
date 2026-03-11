@@ -36,6 +36,11 @@ export const ContactsPage: React.FC = () => {
                 setSearch={controller.setSearch}
                 statusFilter={controller.statusFilter}
                 setStatusFilter={controller.setStatusFilter}
+                companyFilter={controller.companyFilter}
+                setCompanyFilter={controller.setCompanyFilter}
+                tagFilter={controller.tagFilter}
+                setTagFilter={controller.setTagFilter}
+                companies={controller.companies}
                 isFilterOpen={controller.isFilterOpen}
                 setIsFilterOpen={controller.setIsFilterOpen}
                 openCreateModal={controller.openCreateModal}
@@ -118,6 +123,10 @@ export const ContactsPage: React.FC = () => {
                 setDeleteId={controller.setDeleteId}
                 openEditCompanyModal={controller.openEditCompanyModal}
                 setDeleteCompanyId={controller.setDeleteCompanyId}
+                onCompanyClick={(companyId) => {
+                    controller.setCompanyFilter(companyId);
+                    controller.setViewMode('people');
+                }}
                 sortBy={controller.sortBy}
                 sortOrder={controller.sortOrder}
                 onSort={controller.handleSort}

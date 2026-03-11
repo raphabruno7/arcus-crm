@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, Mail, Phone, Plus, Calendar, Pencil, Trash2, Globe, MoreHorizontal, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Building2, Mail, Phone, Plus, Calendar, Pencil, Trash2, Globe, MoreHorizontal, ArrowUpDown, ArrowUp, ArrowDown, MessageCircle } from 'lucide-react';
 import { Contact, Company, ContactSortableColumn } from '@/types';
 import { StageBadge } from './ContactsStageTabs';
 
@@ -85,6 +85,7 @@ interface ContactsListProps {
     setDeleteId: (id: string) => void;
     openEditCompanyModal?: (company: Company) => void;
     setDeleteCompanyId?: (id: string) => void;
+    onCompanyClick?: (companyId: string) => void;
     // Sorting props
     sortBy?: ContactSortableColumn;
     sortOrder?: 'asc' | 'desc';
@@ -144,6 +145,7 @@ export const ContactsList: React.FC<ContactsListProps> = ({
     setDeleteId,
     openEditCompanyModal,
     setDeleteCompanyId,
+    onCompanyClick,
     sortBy = 'created_at',
     sortOrder = 'desc',
     onSort,
@@ -250,6 +252,15 @@ export const ContactsList: React.FC<ContactsListProps> = ({
                                                 <Building2 size={10} />
                                                 <span>{getCompanyName(contact.clientCompanyId)}</span>
                                             </div>
+                                            {contact.tags && contact.tags.length > 0 && (
+                                                <div className="flex flex-wrap gap-1 mt-1">
+                                                    {contact.tags.map((tag, idx) => (
+                                                        <span key={idx} className="px-1.5 py-0.5 rounded-full bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 text-[10px] font-medium">
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
@@ -258,7 +269,12 @@ export const ContactsList: React.FC<ContactsListProps> = ({
                                                 <Mail size={12} /> {contact.email || '---'}
                                             </div>
                                             <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 text-xs">
-                                                <Phone size={12} /> {contact.phone || '---'}
+                                                {contact.source === 'WHATSAPP' ? (
+                                                    <MessageCircle size={12} className="text-green-500" />
+                                                ) : (
+                                                    <Phone size={12} />
+                                                )}
+                                                {contact.phone || '---'}
                                             </div>
                                         </div>
                                     </td>
@@ -391,7 +407,14 @@ export const ContactsList: React.FC<ContactsListProps> = ({
                                                 );
                                             })()}
                                             <div>
-                                                <span className="font-semibold text-slate-900 dark:text-white block">{company.name}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onCompanyClick?.(company.id)}
+                                                    className="font-semibold text-slate-900 dark:text-white block hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-left"
+                                                    title={`Ver contatos de ${company.name}`}
+                                                >
+                                                    {company.name}
+                                                </button>
                                                 {company.website && (
                                                     <a href={`https://${company.website}`} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-500 hover:underline flex items-center gap-1">
                                                         <Globe size={10} /> {company.website}

@@ -118,7 +118,7 @@ export const useDealsView = (filters?: DealsFilters) => {
           contactName: contact?.name || 'Sem contato',
           contactEmail: contact?.email || '',
           stageLabel: stageMap.get(deal.status) || 'Estágio não identificado',
-          currencyCode: boardCurrencyMap.get(deal.boardId) || 'BRL',
+          currencyCode: deal.currencyCode || boardCurrencyMap.get(deal.boardId) || 'BRL',
         };
       });
 
@@ -221,7 +221,7 @@ export const useDealsByBoard = (boardId: string) => {
           contactName: contact?.name || 'Sem contato',
           contactEmail: contact?.email || '',
           stageLabel: stageMap.get(deal.status) || 'Estágio não identificado',
-          currencyCode: boardCurrencyMap.get(deal.boardId) || 'BRL',
+          currencyCode: deal.currencyCode || boardCurrencyMap.get(deal.boardId) || 'BRL',
         };
       });
       return enrichedDeals;

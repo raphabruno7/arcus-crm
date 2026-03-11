@@ -68,6 +68,8 @@ export const useContactsController = () => {
   const [stageFilter, setStageFilter] = useState<ContactStage | 'ALL'>(
     (searchParams?.get('stage') as ContactStage) || 'ALL'
   );
+  const [companyFilter, setCompanyFilter] = useState<string>('ALL');
+  const [tagFilter, setTagFilter] = useState<string>('ALL');
   const [viewMode, setViewMode] = useState<'people' | 'companies'>('people');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
@@ -109,6 +111,12 @@ export const useContactsController = () => {
     if (dateRange.end) {
       filters.dateEnd = dateRange.end;
     }
+    if (companyFilter !== 'ALL') {
+      filters.clientCompanyId = companyFilter;
+    }
+    if (tagFilter !== 'ALL') {
+      filters.tag = tagFilter;
+    }
 
     // Always include sorting
     filters.sortBy = sortBy;
@@ -116,11 +124,11 @@ export const useContactsController = () => {
 
     // Return filters (always has at least sorting)
     return filters;
-  }, [search, stageFilter, statusFilter, dateRange, sortBy, sortOrder]);
+  }, [search, stageFilter, statusFilter, dateRange, companyFilter, tagFilter, sortBy, sortOrder]);
 
   // T029: Track filter changes to reset pagination synchronously
   // This prevents 416 errors when filters change while on a high page number
-  const filterKey = `${search}-${stageFilter}-${statusFilter}-${dateRange.start}-${dateRange.end}`;
+  const filterKey = `${search}-${stageFilter}-${statusFilter}-${companyFilter}-${tagFilter}-${dateRange.start}-${dateRange.end}`;
   const prevFilterKeyRef = React.useRef<string>(filterKey);
 
   // Reset to first page when filters change (safe: inside effect)
@@ -161,6 +169,7 @@ export const useContactsController = () => {
     phone: '',
     role: '',
     companyName: '',
+    tags: [] as string[],
   });
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
 
@@ -177,7 +186,7 @@ export const useContactsController = () => {
       return;
     }
     setEditingContact(null);
-    setFormData({ name: '', email: '', phone: '', role: '', companyName: '' });
+    setFormData({ name: '', email: '', phone: '', role: '', companyName: '', tags: [] });
     setIsModalOpen(true);
   };
 
@@ -190,6 +199,7 @@ export const useContactsController = () => {
       phone: contact.phone,
       role: contact.role || '',
       companyName: company?.name || '',
+      tags: contact.tags || [],
     });
     setIsModalOpen(true);
   };
@@ -420,6 +430,7 @@ export const useContactsController = () => {
             phone: normalizedPhone,
             role: formData.role,
             companyId: companyId,
+            tags: formData.tags,
           },
         },
         {
@@ -438,6 +449,7 @@ export const useContactsController = () => {
           phone: normalizedPhone,
           role: formData.role,
           companyId: companyId || '',
+          tags: formData.tags,
           status: 'ACTIVE',
           stage: ContactStage.LEAD,
           totalValue: 0,
@@ -648,6 +660,10 @@ export const useContactsController = () => {
     stageFilter,
     setStageFilter,
     stageCounts,
+    companyFilter,
+    setCompanyFilter,
+    tagFilter,
+    setTagFilter,
     viewMode,
     setViewMode,
     isFilterOpen,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Filter, Plus, Download } from 'lucide-react';
+import { CRMCompany } from '@/types';
 
 interface ContactsHeaderProps {
   viewMode: 'people' | 'companies';
@@ -7,6 +8,11 @@ interface ContactsHeaderProps {
   setSearch: (value: string) => void;
   statusFilter: 'ALL' | 'ACTIVE' | 'INACTIVE' | 'CHURNED' | 'RISK';
   setStatusFilter: (value: 'ALL' | 'ACTIVE' | 'INACTIVE' | 'CHURNED' | 'RISK') => void;
+  companyFilter: string;
+  setCompanyFilter: (value: string) => void;
+  tagFilter: string;
+  setTagFilter: (value: string) => void;
+  companies: CRMCompany[];
   isFilterOpen: boolean;
   setIsFilterOpen: (value: boolean) => void;
   openCreateModal: () => void;
@@ -43,11 +49,21 @@ export const ContactsHeader: React.FC<ContactsHeaderProps> = ({
   setSearch,
   statusFilter,
   setStatusFilter,
+  companyFilter,
+  setCompanyFilter,
+  tagFilter,
+  setTagFilter,
+  companies,
   isFilterOpen,
   setIsFilterOpen,
   openCreateModal,
   openImportExportModal,
 }) => {
+  const sortedCompanies = React.useMemo(
+    () => [...companies].sort((a, b) => a.name.localeCompare(b.name)),
+    [companies]
+  );
+
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
@@ -60,7 +76,7 @@ export const ContactsHeader: React.FC<ContactsHeaderProps> = ({
             : 'Organizações onde seus contatos trabalham.'}
         </p>
       </div>
-      <div className="flex gap-3 w-full sm:w-auto">
+      <div className="flex gap-3 w-full sm:w-auto flex-wrap">
         {viewMode === 'people' && (
           <select
             value={statusFilter}
@@ -75,6 +91,32 @@ export const ContactsHeader: React.FC<ContactsHeaderProps> = ({
             <option value="INACTIVE">Inativos</option>
             <option value="CHURNED">Perdidos (Churn)</option>
             <option value="RISK">Em Risco (Alerta)</option>
+          </select>
+        )}
+        {viewMode === 'people' && sortedCompanies.length > 0 && (
+          <select
+            value={companyFilter}
+            onChange={e => setCompanyFilter(e.target.value)}
+            aria-label="Filtrar por categoria/empresa"
+            className="pl-3 pr-8 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-primary-500 dark:text-white backdrop-blur-sm appearance-none cursor-pointer max-w-[200px] truncate"
+          >
+            <option value="ALL">Todas as Categorias</option>
+            {sortedCompanies.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        )}
+        {viewMode === 'people' && sortedCompanies.length > 0 && (
+          <select
+            value={tagFilter}
+            onChange={e => setTagFilter(e.target.value)}
+            aria-label="Filtrar por tag"
+            className="pl-3 pr-8 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-white/5 text-sm outline-none focus:ring-2 focus:ring-primary-500 dark:text-white backdrop-blur-sm appearance-none cursor-pointer max-w-[200px] truncate"
+          >
+            <option value="ALL">Todas as Tags</option>
+            {sortedCompanies.map(c => (
+              <option key={c.id} value={c.name}>{c.name}</option>
+            ))}
           </select>
         )}
         <div className="relative flex-1 sm:w-72">

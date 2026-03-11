@@ -169,7 +169,8 @@ export interface Contact {
   birthDate?: string; // New field for Agentic AI tasks
   status: 'ACTIVE' | 'INACTIVE' | 'CHURNED';
   stage: string; // ID do LifecycleStage (antes era ContactStage enum)
-  source?: 'WEBSITE' | 'LINKEDIN' | 'REFERRAL' | 'MANUAL'; // Origem do contato
+  source?: 'WEBSITE' | 'LINKEDIN' | 'REFERRAL' | 'WHATSAPP' | 'MANUAL'; // Origem do contato
+  tags?: string[]; // Categorias/segmentos (e.g. 'Kundalini Yoga', 'Banho de Som')
   notes?: string; // Anotações gerais
   lastPurchaseDate?: string;
   totalValue?: number; // LTV
@@ -245,6 +246,7 @@ export interface Deal {
   tags: string[];
   aiSummary?: string;
   customFields?: Record<string, any>; // Dynamic fields storage
+  currencyCode?: CurrencyCode; // Override board currency (e.g. EUR for Portugal clients)
   lastStageChangeDate?: string; // For stagnation tracking
   lossReason?: string; // For win/loss analysis
 
@@ -493,6 +495,8 @@ export interface ContactsServerFilters {
   dateEnd?: string;
   /** ID da empresa cliente (opcional). */
   clientCompanyId?: string;
+  /** Filtro por tag (contém esta tag). */
+  tag?: string;
   /** Campo para ordenação. */
   sortBy?: ContactSortableColumn;
   /** Direção da ordenação. */

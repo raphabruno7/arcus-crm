@@ -100,6 +100,8 @@ export interface DbDeal {
   is_lost: boolean;
   /** Data de fechamento. */
   closed_at: string | null;
+  /** Moeda do deal (override do board). */
+  currency_code: string | null;
 }
 
 /**
@@ -170,6 +172,7 @@ const transformDeal = (db: DbDeal | DbDealWithItems, items?: DbDealItem[]): Deal
     aiSummary: db.ai_summary || undefined,
     lossReason: db.loss_reason || undefined,
     tags: db.tags || [],
+    currencyCode: (db.currency_code as Deal['currencyCode']) || undefined,
     lastStageChangeDate: db.last_stage_change_date || undefined,
     customFields: db.custom_fields || {},
     createdAt: db.created_at,
@@ -219,6 +222,7 @@ const transformDealToDb = (deal: Partial<Deal>): Partial<DbDeal> => {
   if (deal.aiSummary !== undefined) db.ai_summary = deal.aiSummary || null;
   if (deal.lossReason !== undefined) db.loss_reason = deal.lossReason || null;
   if (deal.tags !== undefined) db.tags = deal.tags;
+  if (deal.currencyCode !== undefined) db.currency_code = deal.currencyCode || null;
   if (deal.lastStageChangeDate !== undefined) db.last_stage_change_date = deal.lastStageChangeDate || null;
   if (deal.customFields !== undefined) db.custom_fields = deal.customFields;
   if (deal.ownerId !== undefined) db.owner_id = sanitizeUUID(deal.ownerId);

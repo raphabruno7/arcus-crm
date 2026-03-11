@@ -31,6 +31,7 @@ type ParsedRow = {
   company?: string;
   status?: string;
   stage?: string;
+  source?: string;
   notes?: string;
 };
 
@@ -44,6 +45,7 @@ const HEADER_SYNONYMS: Record<keyof ParsedRow, string[]> = {
   company: ['company', 'empresa', 'conta', 'account', 'organization', 'organizacao', 'organização'],
   status: ['status'],
   stage: ['stage', 'etapa', 'lifecycle stage', 'ciclo de vida', 'pipeline stage'],
+  source: ['source', 'fonte', 'origem', 'canal'],
   notes: ['notes', 'nota', 'notas', 'observacoes', 'observações', 'obs'],
 };
 
@@ -70,6 +72,7 @@ function buildHeaderIndex(headers: string[]) {
     company: find(HEADER_SYNONYMS.company),
     status: find(HEADER_SYNONYMS.status),
     stage: find(HEADER_SYNONYMS.stage),
+    source: find(HEADER_SYNONYMS.source),
     notes: find(HEADER_SYNONYMS.notes),
   };
 
@@ -89,6 +92,16 @@ function normalizeStatus(v: string | undefined): string | undefined {
   if (s === 'ACTIVE' || s === 'ATIVO') return 'ACTIVE';
   if (s === 'INACTIVE' || s === 'INATIVO') return 'INACTIVE';
   if (s === 'CHURNED' || s === 'PERDIDO' || s === 'CANCELADO') return 'CHURNED';
+  return undefined;
+}
+
+const VALID_SOURCES = ['WEBSITE', 'LINKEDIN', 'REFERRAL', 'WHATSAPP', 'MANUAL'] as const;
+
+function normalizeSource(v: string | undefined): string | undefined {
+  if (!v) return undefined;
+  const s = v.trim().toUpperCase();
+  if ((VALID_SOURCES as readonly string[]).includes(s)) return s;
+  if (s === 'WHATS' || s === 'WHATS APP' || s === 'ZAPP' || s === 'ZAP') return 'WHATSAPP';
   return undefined;
 }
 
@@ -168,6 +181,7 @@ export async function POST(req: Request) {
           company: getCell(r, mapping.company),
           status: normalizeStatus(getCell(r, mapping.status)),
           stage: normalizeStage(getCell(r, mapping.stage)),
+          source: normalizeSource(getCell(r, mapping.source)),
           notes: getCell(r, mapping.notes),
         },
       });
@@ -295,6 +309,7 @@ export async function POST(req: Request) {
         notes: p.data.notes || null,
         status: p.data.status || 'ACTIVE',
         stage: p.data.stage || 'LEAD',
+        source: p.data.source || null,
         updated_at: new Date().toISOString(),
       };
 

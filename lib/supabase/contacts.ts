@@ -61,6 +61,8 @@ export interface DbContact {
   last_purchase_date: string | null;
   /** Valor total de compras. */
   total_value: number;
+  /** Tags/categorias do contato. */
+  tags: string[] | null;
   /** Data de criação. */
   created_at: string;
   /** Data de atualização. */
@@ -113,6 +115,7 @@ const transformContact = (db: DbContact): Contact => ({
   status: db.status as Contact['status'],
   stage: db.stage,
   source: db.source as Contact['source'] || undefined,
+  tags: db.tags || [],
   birthDate: db.birth_date || undefined,
   lastInteraction: db.last_interaction || undefined,
   lastPurchaseDate: db.last_purchase_date || undefined,
@@ -161,6 +164,7 @@ const transformContactToDb = (contact: Partial<Contact>): Partial<DbContact> => 
   if (contact.status !== undefined) db.status = contact.status;
   if (contact.stage !== undefined) db.stage = contact.stage;
   if (contact.source !== undefined) db.source = contact.source || null;
+  if (contact.tags !== undefined) (db as any).tags = contact.tags || [];
   if (contact.birthDate !== undefined) db.birth_date = contact.birthDate || null;
   if (contact.lastInteraction !== undefined) db.last_interaction = contact.lastInteraction || null;
   if (contact.lastPurchaseDate !== undefined) db.last_purchase_date = contact.lastPurchaseDate || null;
@@ -356,6 +360,11 @@ export const contactsService = {
         if (filters.clientCompanyId) {
           query = query.eq('client_company_id', filters.clientCompanyId);
         }
+
+        // Tag filter (uses PostgreSQL array "contains" operator)
+        if (filters.tag) {
+          query = query.contains('tags', [filters.tag]);
+        }
       }
 
       // Apply pagination and ordering
@@ -410,6 +419,7 @@ export const contactsService = {
         status: contact.status || 'ACTIVE',
         stage: contact.stage || 'LEAD',
         source: sanitizeText(contact.source),
+        tags: contact.tags || [],
         birth_date: sanitizeText(contact.birthDate),
         last_interaction: sanitizeText(contact.lastInteraction),
         last_purchase_date: sanitizeText(contact.lastPurchaseDate),

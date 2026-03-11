@@ -39,6 +39,7 @@ import { StageProgressBar } from '../StageProgressBar';
 import { ActivityRow } from '@/features/activities/components/ActivityRow';
 import { formatPriorityPtBr } from '@/lib/utils/priority';
 import { currencySymbol, formatCurrency } from '@/lib/currency';
+import { CURRENCY_CODES, CurrencyCode } from '@/types';
 
 interface DealDetailModalProps {
   dealId: string | null;
@@ -424,7 +425,16 @@ export const DealDetailModal: React.FC<DealDetailModalProps> = ({ dealId, isOpen
 
                 {isEditingValue ? (
                   <div className="flex gap-2 items-center">
-                    <span className="text-lg font-mono font-bold text-slate-500">{currencySymbol(deal.currencyCode)}</span>
+                    <select
+                      value={deal.currencyCode || 'BRL'}
+                      onChange={e => updateDeal(deal.id, { currencyCode: e.target.value as CurrencyCode })}
+                      className="text-sm font-mono font-bold text-slate-500 bg-white dark:bg-black/20 border border-slate-300 dark:border-slate-600 rounded px-1 py-1 outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                      aria-label="Moeda"
+                    >
+                      {CURRENCY_CODES.map(c => (
+                        <option key={c} value={c}>{currencySymbol(c)}</option>
+                      ))}
+                    </select>
                     <input
                       autoFocus
                       type="number"
@@ -445,7 +455,7 @@ export const DealDetailModal: React.FC<DealDetailModalProps> = ({ dealId, isOpen
                       setIsEditingValue(true);
                     }}
                     className="text-lg text-primary-600 dark:text-primary-400 font-mono font-bold cursor-pointer hover:underline decoration-dashed underline-offset-4"
-                    title="Clique para editar valor"
+                    title="Clique para editar valor e moeda"
                   >
                     {formatCurrency(deal.value, deal.currencyCode)}
                   </p>

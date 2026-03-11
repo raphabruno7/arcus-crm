@@ -5,12 +5,13 @@ import { DebugFillButton } from '@/components/debug/DebugFillButton';
 import { fakeContact } from '@/lib/debug';
 import { FocusTrap, useFocusReturn } from '@/lib/a11y';
 
-interface ContactFormData {
+export interface ContactFormData {
   name: string;
   email: string;
   phone: string;
   role: string;
   companyName: string;
+  tags: string[];
 }
 
 interface ContactFormModalProps {
@@ -68,6 +69,7 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({
       phone: fake.phone,
       role: fake.role,
       companyName: fake.companyName,
+      tags: [],
     });
   };
 
@@ -181,6 +183,44 @@ export const ContactFormModal: React.FC<ContactFormModalProps> = ({
                 ? 'Edite para alterar a empresa. Deixe em branco para desvincular.'
                 : 'Se a empresa já existir, o contato será vinculado a ela.'}
             </p>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">
+              Tags
+            </label>
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {(formData.tags || []).map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-medium"
+                >
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, tags: formData.tags.filter((_, i) => i !== idx) })}
+                    className="hover:text-red-500 transition-colors"
+                    aria-label={`Remover tag ${tag}`}
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+            </div>
+            <input
+              type="text"
+              className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Digite e pressione Enter"
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const val = (e.target as HTMLInputElement).value.trim();
+                  if (val && !(formData.tags || []).includes(val)) {
+                    setFormData({ ...formData, tags: [...(formData.tags || []), val] });
+                    (e.target as HTMLInputElement).value = '';
+                  }
+                }
+              }}
+            />
           </div>
 
             <button

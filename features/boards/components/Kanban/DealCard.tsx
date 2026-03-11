@@ -60,6 +60,7 @@ const DealCardComponent: React.FC<DealCardProps> = ({
   onMoveToStage,
 }) => {
   const [localDragging, setLocalDragging] = useState(false);
+  const didDragRef = React.useRef(false);
   const isClosed = isDealClosed(deal);
 
   const handleToggleMenu = (e: React.MouseEvent) => {
@@ -72,10 +73,9 @@ const DealCardComponent: React.FC<DealCardProps> = ({
   };
 
   const handleDragStart = (e: React.DragEvent) => {
+    didDragRef.current = true;
     setLocalDragging(true);
     e.dataTransfer.setData('dealId', deal.id);
-    // Fallback mapping when optimistic temp id gets replaced mid-drag by a refetch.
-    // Do not log title; it can contain PII.
     e.dataTransfer.setData('dealTitle', deal.title || '');
     e.dataTransfer.effectAllowed = 'move';
     onDragStart(e, deal.id, deal.title || '');
@@ -157,10 +157,18 @@ const DealCardComponent: React.FC<DealCardProps> = ({
       draggable={!deal.id.startsWith('temp-')}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      onMouseDown={() => setLastMouseDownDealId(deal.id)}
-      onClick={e => {
+      onMouseDown={() => {
+        didDragRef.current = false;
+        setLastMouseDownDealId(deal.id);
+      }}
+      onMouseUp={e => {
+        if (didDragRef.current) return;
         if ((e.target as HTMLElement).closest('button')) return;
         onSelect(deal.id);
+      }}
+      onClick={e => {
+        if ((e.target as HTMLElement).closest('button')) return;
+        if (!didDragRef.current) onSelect(deal.id);
       }}
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
