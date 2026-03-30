@@ -12,7 +12,9 @@ import {
 } from 'lucide-react';
 import { Board, CurrencyCode } from '@/types';
 import { useCRM } from '@/context/CRMContext';
-import { currencySymbol, formatCurrency } from '@/lib/currency';
+import { currencySymbol } from '@/lib/currency';
+import { useFormatCurrency } from '@/hooks/useFormatCurrency';
+import { useTranslations } from 'next-intl';
 
 interface BoardStrategyHeaderProps {
   board: Board;
@@ -26,6 +28,8 @@ interface BoardStrategyHeaderProps {
  */
 export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board }) => {
   const { updateBoard, setIsGlobalAIOpen, boards, deals } = useCRM();
+  const t = useTranslations('boards.boardStrategyHeader');
+  const { formatCurrency } = useFormatCurrency();
   const [isEditing, setIsEditing] = useState(false);
   const [editedBoard, setEditedBoard] = useState(board);
 
@@ -101,7 +105,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
             <Target size={16} className="text-primary-500" />
           </div>
           <span className="font-medium text-sm">
-            Definir Estratégia do Board (Meta, Agente e Gatilhos)
+            {t('defineStrategy')}
           </span>
         </button>
       </div>
@@ -135,7 +139,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
           <button
             onClick={() => setIsEditing(true)}
             className="absolute top-2 right-2 p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-full transition-all opacity-0 group-hover/header:opacity-100"
-            title="Editar Estratégia"
+            title={t('editStrategy')}
           >
             <Edit2 size={12} />
           </button>
@@ -154,10 +158,10 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white">
-                    Estratégia do Board
+                    {t('strategyTitle')}
                   </h3>
                   <p className="text-[10px] text-slate-500 font-medium">
-                    Defina como a IA deve trabalhar aqui
+                    {t('strategySubtitle')}
                   </p>
                 </div>
               </div>
@@ -166,13 +170,13 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                   onClick={handleCancel}
                   className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
                 >
-                  Cancelar
+                  {t('cancel')}
                 </button>
                 <button
                   onClick={handleSave}
                   className="px-4 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-black text-xs font-bold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all"
                 >
-                  Salvar Alterações
+                  {t('save')}
                 </button>
               </div>
             </div>

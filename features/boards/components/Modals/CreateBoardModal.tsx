@@ -8,7 +8,8 @@ import { useToast } from '@/context/ToastContext';
 import { Modal } from '@/components/ui/Modal';
 import { MODAL_FOOTER_CLASS } from '@/components/ui/modalStyles';
 import { slugify } from '@/lib/utils/slugify';
-import { formatCurrency } from '@/lib/currency';
+import { useFormatCurrency } from '@/hooks/useFormatCurrency';
+import { useTranslations } from 'next-intl';
 
 interface CreateBoardModalProps {
   isOpen: boolean;
@@ -115,6 +116,8 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
   onSwitchEditingBoard,
 }) => {
   const headingId = useId();
+  const t = useTranslations('boards.createBoardModal');
+  const { formatCurrency } = useFormatCurrency();
 
   React.useEffect(() => {
   }, [isOpen]);
@@ -274,7 +277,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
 
     const normalizedKey = boardKey.trim() ? slugify(boardKey) : '';
     if (boardKey.trim() && !normalizedKey) {
-      addToast('Chave inválida. Use letras/números e hífen.', 'error');
+      addToast(t('toastInvalidKey'), 'error');
       return;
     }
 
@@ -317,13 +320,13 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
       // ignore
     }
 
-    addToast('Criando board...', 'info');
+    addToast(t('toastCreating'), 'info');
     onClose(); // close immediately for UX
 
     try {
       onSave(payload);
     } catch (e) {
-      addToast((e as Error).message || 'Erro ao criar board', 'error');
+      addToast((e as Error).message || t('toastBoardError'), 'error');
       onClose(); // ensure closed state is consistent
     }
   };
@@ -331,14 +334,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
   const handleCopyKey = async () => {
     const normalizedKey = boardKey.trim() ? slugify(boardKey) : '';
     if (!normalizedKey) {
-      addToast('Defina uma chave primeiro.', 'warning');
+      addToast(t('toastNoKey'), 'warning');
       return;
     }
     try {
       await navigator.clipboard.writeText(normalizedKey);
-      addToast('Chave copiada.', 'success');
+      addToast(t('toastKeyCopied'), 'success');
     } catch {
-      addToast('Não foi possível copiar.', 'error');
+      addToast(t('toastKeyNotCopied'), 'error');
     }
   };
 
@@ -347,7 +350,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title={editingBoard ? 'Editar Board' : 'Criar Novo Board'}
+        title={editingBoard ? t('editTitle') : t('createTitle')}
         size="lg"
         labelledById={headingId}
         className="max-w-xl"
@@ -367,7 +370,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               {editingBoard && onSwitchEditingBoard && availableBoards.length > 1 && (
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Editando board
+                    {t('switchBoardLabel')}
                   </label>
                   <div className="relative">
                     <select
@@ -377,7 +380,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                         if (next) onSwitchEditingBoard(next);
                       }}
                       className="w-full appearance-none px-4 py-2.5 pr-10 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      aria-label="Selecionar board para editar"
+                      aria-label={t('switchBoardLabel')}
                     >
                       {availableBoards.map(b => (
                         <option key={b.id} value={b.id}>
@@ -392,7 +395,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                     />
                   </div>
                   <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                    Dica: troque aqui para editar outro board sem fechar este modal.
+                    {t('switchBoardTip')}
                   </p>
                 </div>
               )}
@@ -400,7 +403,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Nome do Board *
+                  {t('boardNameLabel')}
                 </label>
                 <input
                   type="text"
@@ -410,7 +413,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                     setName(next);
                     if (!keyTouched) setBoardKey(slugify(next));
                   }}
-                  placeholder="Ex: Pipeline de Vendas, Onboarding, etc"
+                  placeholder={t('boardNamePlaceholder')}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
@@ -418,7 +421,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               {/* Board key (slug) */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Chave (slug) — para integrações
+                  {t('boardKeyLabel')}
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -428,34 +431,34 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                       setKeyTouched(true);
                       setBoardKey(e.target.value);
                     }}
-                    placeholder="ex: vendas-b2b"
+                    placeholder={t('boardKeyPlaceholder')}
                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent font-mono text-sm"
                   />
                   <button
                     type="button"
                     onClick={handleCopyKey}
                     className="shrink-0 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200"
-                    aria-label="Copiar chave do board"
-                    title="Copiar chave"
+                    aria-label={t('copyKeyAriaLabel')}
+                    title={t('copyKeyAriaLabel')}
                   >
                     <Copy size={16} />
                   </button>
                 </div>
                 <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                  Dica: é mais fácil usar isso no n8n/Make do que um UUID.
+                  {t('boardKeyTip')}
                 </p>
               </div>
 
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Descrição
+                  {t('descriptionLabel')}
                 </label>
                 <input
                   type="text"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Breve descrição do propósito deste board"
+                  placeholder={t('descriptionPlaceholder')}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
@@ -464,22 +467,22 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               {!editingBoard && (
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    📋 Usar Template
+                    {t('templateLabel')}
                   </label>
                   <select
                     value={selectedTemplate}
                     onChange={(e) => handleTemplateSelect(e.target.value as BoardTemplateType | '')}
                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
-                    <option value="">Board em branco</option>
-                    <option value="PRE_SALES">🎯 Pré-venda (Lead → MQL)</option>
-                    <option value="SALES">💰 Pipeline de Vendas</option>
-                    <option value="ONBOARDING">🚀 Onboarding de Clientes</option>
-                    <option value="CS">❤️ CS & Upsell</option>
+                    <option value="">{t('templateBlank')}</option>
+                    <option value="PRE_SALES">{t('templatePreSales')}</option>
+                    <option value="SALES">{t('templateSales')}</option>
+                    <option value="ONBOARDING">{t('templateOnboarding')}</option>
+                    <option value="CS">{t('templateCS')}</option>
                   </select>
                   {selectedTemplate && (
                     <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                      ✨ Template aplicado! Você pode editar os campos abaixo.
+                      {t('templateApplied')}
                     </p>
                   )}
                 </div>
@@ -488,14 +491,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               {/* Linked Lifecycle Stage */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  🎯 Gerencia Contatos no Estágio
+                  {t('lifecycleLabel')}
                 </label>
                 <select
                   value={linkedLifecycleStage}
                   onChange={(e) => setLinkedLifecycleStage(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="">Nenhum (board genérico)</option>
+                  <option value="">{t('lifecycleNone')}</option>
                   {lifecycleStages.map(stage => (
                     <option key={stage.id} value={stage.id}>{stage.name}</option>
                   ))}
@@ -508,14 +511,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               {/* Default Product */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  🧾 Produto padrão (opcional)
+                  {t('defaultProductLabel')}
                 </label>
                 <select
                   value={defaultProductId}
                   onChange={(e) => setDefaultProductId(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="">Nenhum</option>
+                  <option value="">{t('defaultProductNone')}</option>
                   {products
                     .filter(p => p.active !== false)
                     .map(p => (
@@ -525,21 +528,21 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                     ))}
                 </select>
                 <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                  Sugere (ou pré-seleciona) um produto ao adicionar itens em deals desse board.
+                  {t('defaultProductTip')}
                 </p>
               </div>
 
               {/* Next Board Automation */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Ao Ganhar, enviar para...
+                  {t('nextBoardLabel')}
                 </label>
                 <select
                   value={nextBoardId}
                   onChange={(e) => setNextBoardId(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="">Nenhum (Finalizar aqui)</option>
+                  <option value="">{t('nextBoardNone')}</option>
                   {validNextBoards.map(board => (
                     <option key={board.id} value={board.id}>
                       {board.name}
@@ -547,7 +550,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                   ))}
                 </select>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Cria automaticamente um card no próximo board quando o negócio é ganho.
+                  {t('nextBoardTip')}
                 </p>
               </div>
 
@@ -555,7 +558,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    🏆 Estágio Ganho (Won)
+                    {t('wonStageLabel')}
                   </label>
                   <select
                     value={wonStayInStage ? 'archive' : wonStageId}
@@ -570,19 +573,19 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                     }}
                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
-                    <option value="">Automático (pelo ciclo)</option>
-                    <option value="archive">Arquivar (Manter na etapa)</option>
+                    <option value="">{t('wonStageAuto')}</option>
+                    <option value="archive">{t('wonStageArchive')}</option>
                     {stages.map(stage => (
                       <option key={stage.id} value={stage.id}>{stage.label}</option>
                     ))}
                   </select>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    O botão "Ganho" moverá o card para cá.
+                    {t('wonStageTip')}
                   </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    ❌ Estágio Perdido (Lost)
+                    {t('lostStageLabel')}
                   </label>
                   <select
                     value={lostStayInStage ? 'archive' : lostStageId}
@@ -597,14 +600,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                     }}
                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
-                    <option value="">Automático</option>
-                    <option value="archive">Arquivar (Manter na etapa)</option>
+                    <option value="">{t('lostStageAuto')}</option>
+                    <option value="archive">{t('lostStageArchive')}</option>
                     {stages.map(stage => (
                       <option key={stage.id} value={stage.id}>{stage.label}</option>
                     ))}
                   </select>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    O botão "Perdido" moverá o card para cá.
+                    {t('lossStageTip')}
                   </p>
                 </div>
               </div>
@@ -613,7 +616,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                    Etapas do Kanban
+                    {t('stagesLabel')}
                   </label>
                   <div className="flex items-center gap-2">
                     <button
@@ -621,14 +624,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                       className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors"
                     >
                       <Plus size={14} />
-                      Adicionar etapa
+                      {t('addStage')}
                     </button>
                     <button
                       onClick={() => setIsLifecycleModalOpen(true)}
                       className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors"
                     >
                       <Settings size={14} />
-                      Gerenciar Estágios
+                      {t('manageStages')}
                     </button>
                   </div>
                 </div>
@@ -684,7 +687,7 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                             setDragOverStageId(null);
                           }}
                           className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-grab active:cursor-grabbing flex-shrink-0"
-                          aria-label={`Reordenar etapa: ${stage.label}`}
+                          aria-label={t('reorderAriaLabel', { label: stage.label })}
                           title="Arraste para reordenar"
                         >
                           <GripVertical size={18} aria-hidden="true" />
@@ -760,14 +763,14 @@ export const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
                 onClick={onClose}
                 className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors focus-visible-ring"
               >
-                Cancelar
+                {t('cancelButton')}
               </button>
               <button
                 onClick={handleSave}
                 disabled={!name.trim()}
                 className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors focus-visible-ring"
               >
-                {editingBoard ? 'Salvar Alterações' : 'Criar Board'}
+                {editingBoard ? t('saveButton') : t('createTitle')}
               </button>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React, { useCallback, useId, useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { BoardStage, DealView } from '@/types';
+import { useTranslations } from 'next-intl';
 
 interface MoveToStageModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export const MoveToStageModal: React.FC<MoveToStageModalProps> = ({
   currentStageId,
   onMove,
 }) => {
+  const t = useTranslations('boards.moveToStageModal');
   const headingId = useId();
 
   const dealId = deal?.id ?? '';
@@ -54,7 +56,7 @@ export const MoveToStageModal: React.FC<MoveToStageModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Mover para Estágio"
+      title={t('title')}
       size="sm"
       describedById={headingId}
     >
@@ -62,14 +64,14 @@ export const MoveToStageModal: React.FC<MoveToStageModalProps> = ({
         {/* Current deal info */}
         <div className="p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10">
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            Movendo o negócio:
+            {t('movingDeal')}
           </p>
           <p className="font-bold text-slate-900 dark:text-white">
             {deal.title}
           </p>
           {stageData.currentStage && (
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Estágio atual: <span className="font-medium">{stageData.currentStage.label}</span>
+              {t('currentStage')} <span className="font-medium">{stageData.currentStage.label}</span>
             </p>
           )}
         </div>
@@ -77,9 +79,9 @@ export const MoveToStageModal: React.FC<MoveToStageModalProps> = ({
         {/* Stage options */}
         <div id={headingId}>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Selecione o novo estágio:
+            {t('selectNewStage')}
           </p>
-          <div className="space-y-2" role="listbox" aria-label="Estágios disponíveis">
+          <div className="space-y-2" role="listbox" aria-label={t('availableStages')}>
             {stageData.availableStages.map((stage, index) => (
               <button
                 key={stage.id}
@@ -118,7 +120,7 @@ export const MoveToStageModal: React.FC<MoveToStageModalProps> = ({
           className="w-full px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400
                      hover:bg-slate-100 dark:hover:bg-white/5 transition-colors focus-visible-ring"
         >
-          Cancelar
+          {t('cancel')}
         </button>
       </div>
     </Modal>

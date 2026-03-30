@@ -4,7 +4,8 @@ import { DealView, CustomFieldDefinition, BoardStage } from '@/types';
 import { ActivityStatusIcon } from './ActivityStatusIcon';
 import { getActivityStatus } from '@/features/boards/hooks/useBoardsController';
 import { MoveToStageModal } from '../Modals/MoveToStageModal';
-import { formatCurrency } from '@/lib/currency';
+import { useFormatCurrency } from '@/hooks/useFormatCurrency';
+import { useTranslations } from 'next-intl';
 
 type QuickAddType = 'CALL' | 'MEETING' | 'EMAIL';
 
@@ -38,6 +39,8 @@ const KanbanListRow = React.memo(function KanbanListRow({
   onMoveDealToStage,
 }: KanbanListRowProps) {
   const [moveToStageOpen, setMoveToStageOpen] = useState(false);
+  const tList = useTranslations('boards.kanbanList');
+  const { formatCurrency } = useFormatCurrency();
 
   return (
     <>
@@ -74,8 +77,8 @@ const KanbanListRow = React.memo(function KanbanListRow({
                     ? 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300'
                     : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
-              aria-label="Mover estágio"
-              title="Mover estágio"
+              aria-label={tList('moveStageAriaLabel')}
+              title={tList('moveStageTitle')}
             >
               {stageLabel}
             </button>
@@ -175,6 +178,7 @@ export const KanbanList: React.FC<KanbanListProps> = ({
   handleQuickAddActivity,
   onMoveDealToStage,
 }) => {
+  const t = useTranslations('boards.kanbanList');
   // Performance: evitar `find` por linha (O(N*S)) ao renderizar tabela.
   const stageLabelById = useMemo(() => {
     const map = new Map<string, string>();
@@ -217,19 +221,19 @@ export const KanbanList: React.FC<KanbanListProps> = ({
             <tr>
               <th className="px-6 py-3 font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider w-10"></th>
               <th className="px-6 py-3 font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Negócio
+                {t('colDeal')}
               </th>
               <th className="px-6 py-3 font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Empresa
+                {t('colCompany')}
               </th>
               <th className="px-6 py-3 font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Estágio
+                {t('colStage')}
               </th>
               <th className="px-6 py-3 font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Valor
+                {t('colValue')}
               </th>
               <th className="px-6 py-3 font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Dono
+                {t('colOwner')}
               </th>
               {/* Custom Fields Columns */}
               {customFieldDefinitions.map(field => (

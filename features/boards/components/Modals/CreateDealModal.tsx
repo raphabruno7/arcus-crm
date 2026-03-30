@@ -6,6 +6,7 @@ import { X, Building2, User, Mail, Phone, AlertCircle, Loader2 } from 'lucide-re
 import { DebugFillButton } from '@/components/debug/DebugFillButton';
 import { fakeDeal, fakeContact, fakeCompany } from '@/lib/debug';
 import { ContactSearchCombobox } from '@/components/ui/ContactSearchCombobox';
+import { useTranslations } from 'next-intl';
 
 interface CreateDealModalProps {
     isOpen: boolean;
@@ -51,6 +52,8 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
         title: '',
         value: ''
     });
+
+    const t = useTranslations('boards.createDealModal');
 
     // Estado de UI
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,13 +108,13 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
             <div className="fixed inset-0 md:left-[var(--app-sidebar-width,0px)] z-[9999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
                 <div className="bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl w-full max-w-md p-5">
                     <p className="text-slate-700 dark:text-slate-300 text-center">
-                        Nenhum board selecionado ou board sem estágios.
+                        {t('noBoardTitle')}
                     </p>
                     <button
                         onClick={onClose}
                         className="w-full mt-4 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold py-2.5 rounded-lg transition-all"
                     >
-                        Fechar
+                        {t('close')}
                     </button>
                 </div>
             </div>
@@ -182,14 +185,14 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
             
             // Se retornou null, houve erro (já logado no console)
             if (result === null) {
-                setError('Já existe um negócio com este título para este contato. Altere o título ou selecione outro contato.');
+                setError(t('duplicateError'));
                 return;
             }
 
             onClose();
             resetForm();
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Erro ao criar negócio. Tente novamente.');
+            setError(err instanceof Error ? err.message : t('genericError'));
         } finally {
             setIsSubmitting(false);
         }
@@ -210,7 +213,7 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
             >
                 <div className="p-5 border-b border-slate-200 dark:border-white/10 flex justify-between items-center sticky top-0 bg-white dark:bg-dark-card z-10">
                     <div className="flex items-center gap-2">
-                        <h2 className="text-lg font-bold text-slate-900 dark:text-white font-display">Novo Negócio</h2>
+                        <h2 className="text-lg font-bold text-slate-900 dark:text-white font-display">{t('title')}</h2>
                         <DebugFillButton onClick={fillWithFakeData} />
                     </div>
                     <button onClick={() => { onClose(); resetForm(); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-white">
@@ -223,7 +226,7 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                     <div>
                         <div className="flex items-center gap-2 mb-3">
                             <label className="text-xs font-bold text-slate-500 uppercase">
-                                Contato
+                                {t('contact')}
                             </label>
                             {!selectedContact && (
                                 <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5 ml-auto">
@@ -236,18 +239,18 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                                                 : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                                         }`}
                                     >
-                                        Buscar
+                                        {t('search')}
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setIsCreatingNew(true)}
                                         className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${
-                                            isCreatingNew 
-                                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' 
+                                            isCreatingNew
+                                                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                                                 : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                                         }`}
                                     >
-                                        + Novo
+                                        {t('newContact')}
                                     </button>
                                 </div>
                             )}
@@ -314,7 +317,7 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                                     <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="text"
-                                        placeholder="Nome do contato *"
+                                        placeholder={t('contactNamePlaceholderRequired')}
                                         required={isCreatingNew}
                                         value={newContactData.name}
                                         onChange={(e) => setNewContactData(prev => ({ ...prev, name: e.target.value }))}
@@ -327,7 +330,7 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                                         <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input
                                             type="email"
-                                            placeholder="Email"
+                                            placeholder={t('emailInputPlaceholder')}
                                             value={newContactData.email}
                                             onChange={(e) => setNewContactData(prev => ({ ...prev, email: e.target.value }))}
                                             className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
@@ -338,7 +341,7 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                                         <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input
                                             type="tel"
-                                            placeholder="Telefone"
+                                            placeholder={t('phoneInputPlaceholder')}
                                             value={newContactData.phone}
                                             onChange={(e) => setNewContactData(prev => ({ ...prev, phone: e.target.value }))}
                                             className="w-full pl-10 pr-3 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
@@ -350,7 +353,7 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                                     <Building2 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="text"
-                                        placeholder="Empresa"
+                                        placeholder={t('companyInputPlaceholder')}
                                         value={newContactData.companyName}
                                         onChange={(e) => setNewContactData(prev => ({ ...prev, companyName: e.target.value }))}
                                         className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
@@ -362,23 +365,23 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
 
                     {/* Dados do Negócio */}
                     <div className="pt-3 border-t border-slate-100 dark:border-white/5">
-                        <h3 className="text-xs font-bold text-slate-400 uppercase mb-3">Dados do Negócio</h3>
-                        
+                        <h3 className="text-xs font-bold text-slate-400 uppercase mb-3">{t('dealDataTitle')}</h3>
+
                         <div className="space-y-3">
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Nome do Negócio *</label>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">{t('dealNameLabel')}</label>
                                 <input
                                     required
                                     type="text"
                                     className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
-                                    placeholder="Ex: Contrato Anual - Acme"
+                                    placeholder={t('dealNameInputPlaceholder')}
                                     value={dealData.title}
                                     onChange={e => setDealData(prev => ({ ...prev, title: e.target.value }))}
                                 />
                             </div>
-                            
+
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Valor Estimado (R$)</label>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">{t('estimatedValueLabel')}</label>
                                 <input
                                     type="number"
                                     className="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-500"
@@ -406,10 +409,10 @@ export const CreateDealModal: React.FC<CreateDealModalProps> = ({
                         {isSubmitting ? (
                             <>
                                 <Loader2 size={18} className="animate-spin" />
-                                Criando...
+                                {t('creating')}
                             </>
                         ) : (
-                            'Criar Negócio'
+                            t('createDeal')
                         )}
                     </button>
                 </form>
