@@ -5,6 +5,7 @@ import { Building2, Hourglass, Trophy, XCircle } from 'lucide-react';
 import { ActivityStatusIcon } from './ActivityStatusIcon';
 import { priorityAriaLabelPtBr } from '@/lib/utils/priority';
 import { formatCurrency, formatCurrencyCompact } from '@/lib/currency';
+import { useTranslations } from 'next-intl';
 
 interface DealCardProps {
   deal: DealView;
@@ -62,6 +63,7 @@ const DealCardComponent: React.FC<DealCardProps> = ({
   const [localDragging, setLocalDragging] = useState(false);
   const didDragRef = React.useRef(false);
   const isClosed = isDealClosed(deal);
+  const t = useTranslations('boards.dealCard');
 
   const handleToggleMenu = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -129,8 +131,8 @@ const DealCardComponent: React.FC<DealCardProps> = ({
     const parts: string[] = [];
 
     // Status badges (visible text)
-    if (deal.isWon) parts.push('ganho');
-    if (deal.isLost) parts.push('perdido');
+    if (deal.isWon) parts.push(t('ariaWon'));
+    if (deal.isLost) parts.push(t('ariaLost'));
 
     // Tags (visible text) - include all shown tags
     const shownTags = deal.tags.slice(0, isClosed ? 1 : 2);
@@ -146,7 +148,7 @@ const DealCardComponent: React.FC<DealCardProps> = ({
     // Additional context
     const priority = getPriorityLabel(deal.priority);
     if (priority) parts.push(priority);
-    if (isRotting && !isClosed) parts.push('estagnado');
+    if (isRotting && !isClosed) parts.push(t('ariaStagnant'));
 
     return parts.join(', ');
   };
@@ -187,7 +189,7 @@ const DealCardComponent: React.FC<DealCardProps> = ({
       {deal.isWon && (
         <div
           className="absolute -top-2 -right-2 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200 p-1 rounded-full shadow-sm z-10 flex items-center gap-0.5"
-          aria-label="Negócio ganho"
+          aria-label={t('wonBadgeAriaLabel')}
         >
           <Trophy size={12} aria-hidden="true" />
         </div>
@@ -197,7 +199,7 @@ const DealCardComponent: React.FC<DealCardProps> = ({
       {deal.isLost && (
         <div
           className="absolute -top-2 -right-2 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 p-1 rounded-full shadow-sm z-10 flex items-center gap-0.5"
-          aria-label={deal.lossReason ? `Perdido: ${deal.lossReason}` : 'Negócio perdido'}
+          aria-label={deal.lossReason ? t('lostWithReasonAriaLabel', { reason: deal.lossReason }) : t('lostBadgeAriaLabel')}
         >
           <XCircle size={12} aria-hidden="true" />
         </div>
@@ -207,7 +209,7 @@ const DealCardComponent: React.FC<DealCardProps> = ({
       {isRotting && !isClosed && (
         <div
           className="absolute -top-2 -right-2 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 p-1 rounded-full shadow-sm z-10"
-          aria-label="Negócio estagnado, mais de 10 dias sem atualização"
+          aria-label={t('rottingAriaLabel')}
         >
           <Hourglass size={12} aria-hidden="true" />
         </div>
@@ -217,12 +219,12 @@ const DealCardComponent: React.FC<DealCardProps> = ({
         {/* Won/Lost status badge */}
         {deal.isWon && (
           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-800/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
-            ✓ GANHO
+            {t('won')}
           </span>
         )}
         {deal.isLost && (
           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-800/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700">
-            ✗ PERDIDO
+            {t('lost')}
           </span>
         )}
         {/* Regular tags */}
@@ -255,13 +257,13 @@ const DealCardComponent: React.FC<DealCardProps> = ({
                 width={20}
                 height={20}
                 className="w-5 h-5 rounded-full ring-1 ring-white dark:ring-slate-800"
-                title={`Responsável: ${deal.owner.name}`}
+                title={t('ownerAriaLabel', { name: deal.owner.name })}
                 unoptimized
               />
             ) : (
               <div
                 className="w-5 h-5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 flex items-center justify-center text-[9px] font-bold ring-1 ring-white dark:ring-slate-800"
-                title={`Responsável: ${deal.owner.name}`}
+                title={t('ownerAriaLabel', { name: deal.owner.name })}
               >
                 {getInitials(deal.owner.name)}
               </div>
