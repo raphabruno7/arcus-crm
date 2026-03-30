@@ -185,17 +185,17 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
               {/* TOP SECTION: RULES (The Brain) */}
               <div className="space-y-3">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
-                  <DoorOpen size={12} /> Regras de Entrada (O Filtro)
+                  <DoorOpen size={12} /> {t('entryRulesLabel')}
                 </label>
                 <div className="relative">
                   <textarea
                     className="w-full h-24 bg-slate-50 dark:bg-white/5 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 resize-none leading-relaxed border border-slate-200 dark:border-white/5 transition-all"
-                    placeholder="Descreva as regras para a IA: Quem deve entrar aqui? Quais critérios de qualidade? (ex: Apenas leads B2B com budget > 50k)"
+                    placeholder={t('entryRulesPlaceholder')}
                     value={editedBoard.entryTrigger || ''}
                     onChange={e => setEditedBoard({ ...editedBoard, entryTrigger: e.target.value })}
                   />
                   <div className="absolute bottom-3 right-3 text-[10px] text-slate-400 bg-white/50 dark:bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">
-                    A IA usará isso para filtrar leads
+                    {t('aiFilterHint')}
                   </div>
                 </div>
               </div>
@@ -205,11 +205,11 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                 {/* LEFT: GOAL (All Goal fields) */}
                 <div className="space-y-4 border-r border-slate-100 dark:border-white/5 pr-8">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-1.5 border-b border-slate-100 dark:border-white/5 pb-2">
-                    <Target size={12} /> Objetivo (O Alvo)
+                    <Target size={12} /> {t('goalLabel')}
                   </label>
 
                   <div className="flex items-center justify-between gap-3">
-                    <label className="text-[10px] text-slate-400 font-medium">Moeda do pipeline</label>
+                    <label className="text-[10px] text-slate-400 font-medium">{t('pipelineCurrencyLabel')}</label>
                     <select
                       className="bg-transparent text-[10px] font-bold uppercase text-slate-400 focus:text-blue-500 focus:outline-none cursor-pointer"
                       value={editedBoard.currencyCode || 'BRL'}
@@ -219,7 +219,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                           currencyCode: e.target.value as CurrencyCode,
                         })
                       }
-                      aria-label="Moeda do pipeline"
+                      aria-label={t('pipelineCurrencyLabel')}
                     >
                       <option value="BRL">BRL (R$)</option>
                       <option value="EUR">EUR (€)</option>
@@ -261,7 +261,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                       </div>
                       <input
                         className="w-full bg-transparent text-xs font-medium text-slate-500 focus:text-blue-600 focus:outline-none transition-colors border-b border-transparent focus:border-blue-200 pb-0.5"
-                        placeholder="Nome do KPI"
+                        placeholder={t('kpiNamePlaceholder')}
                         value={editedBoard.goal?.kpi || ''}
                         onChange={e =>
                           setEditedBoard({
@@ -273,7 +273,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                     </div>
                     <div className="w-24 opacity-50 pointer-events-none grayscale">
                       <label className="text-[10px] text-slate-400 font-medium block mb-1">
-                        Progresso (Auto)
+                        {t('progressAutoLabel')}
                       </label>
                       <input
                         className="w-full bg-transparent border-b border-slate-200 dark:border-white/10 text-lg font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
@@ -287,7 +287,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                   {/* Goal Context */}
                   <textarea
                     className="w-full h-24 bg-transparent border border-slate-200 dark:border-white/10 rounded-lg p-3 text-xs text-slate-600 dark:text-slate-300 focus:outline-none focus:border-blue-500/50 resize-none transition-all"
-                    placeholder="Por que essa meta existe? Qual o contexto estratégico?"
+                    placeholder={t('goalContextPlaceholder')}
                     value={editedBoard.goal?.description || ''}
                     onChange={e =>
                       setEditedBoard({
@@ -301,16 +301,16 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                 {/* RIGHT: AGENT (All Agent fields) */}
                 <div className="space-y-4 pl-2">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-1.5 border-b border-slate-100 dark:border-white/5 pb-2">
-                    <Bot size={12} /> Agente (O Executor)
+                    <Bot size={12} /> {t('agentLabel')}
                   </label>
 
                   {/* Agent Identity */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 font-medium">Nome</label>
+                      <label className="text-[10px] text-slate-400 font-medium">{t('agentNameLabel')}</label>
                       <input
                         className="w-full bg-transparent border-b border-slate-200 dark:border-white/10 py-1 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-purple-500 transition-colors placeholder:text-slate-300"
-                        placeholder="Ex: Ana"
+                        placeholder={t('agentNamePlaceholder')}
                         value={editedBoard.agentPersona?.name || ''}
                         onChange={e =>
                           setEditedBoard({
@@ -321,10 +321,10 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 font-medium">Cargo</label>
+                      <label className="text-[10px] text-slate-400 font-medium">{t('agentRoleLabel')}</label>
                       <input
                         className="w-full bg-transparent border-b border-slate-200 dark:border-white/10 py-1 text-xs text-slate-500 focus:outline-none focus:border-purple-500 transition-colors placeholder:text-slate-300"
-                        placeholder="Ex: Vendedora"
+                        placeholder={t('agentRolePlaceholder')}
                         value={editedBoard.agentPersona?.role || ''}
                         onChange={e =>
                           setEditedBoard({
@@ -339,7 +339,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                   {/* Agent Behavior */}
                   <textarea
                     className="w-full h-24 bg-transparent border border-slate-200 dark:border-white/10 rounded-lg p-3 text-xs text-slate-600 dark:text-slate-300 focus:outline-none focus:border-purple-500/50 resize-none transition-all"
-                    placeholder="Como o agente deve agir? (Tom de voz, postura...)"
+                    placeholder={t('agentBehaviorPlaceholder')}
                     value={editedBoard.agentPersona?.behavior || ''}
                     onChange={e =>
                       setEditedBoard({
@@ -361,7 +361,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                 <div className="flex items-center gap-2 mb-1">
                   <span className="flex h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
                   <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                    Objetivo
+                    {t('goalSection')}
                   </span>
                 </div>
 
@@ -382,10 +382,10 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                   ></div>
                 </div>
                 <div className="flex justify-between text-[9px] font-medium text-slate-400 uppercase tracking-wider">
-                  <span>{calculatedProgress.display} Concluído</span>
+                  <span>{calculatedProgress.display} {t('completedLabel')}</span>
                   <div className="group/goal relative cursor-help">
                     <span className="border-b border-dotted border-slate-600 hover:text-blue-400 transition-colors">
-                      Detalhes
+                      {t('detailsLabel')}
                     </span>
                     {/* Tooltip for Goal Description */}
                     <div className="absolute left-0 top-full mt-2 hidden group-hover/goal:block w-80 p-4 bg-slate-900 text-slate-300 text-xs rounded-lg shadow-2xl z-[100] border border-slate-700 max-h-64 overflow-y-auto">
@@ -401,7 +401,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                   <div className="flex items-center gap-2">
                     <Bot size={12} className="text-purple-500" />
                     <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                      Agente
+                      {t('agentSection')}
                     </span>
                   </div>
                   {board.agentPersona && (
@@ -409,7 +409,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                       onClick={() => setIsGlobalAIOpen(true)}
                       className="text-[10px] font-bold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-2 py-0.5 rounded flex items-center gap-1 transition-colors"
                     >
-                      <MessageSquare size={12} /> Falar
+                      <MessageSquare size={12} /> {t('talkButton')}
                     </button>
                   )}
                 </div>
@@ -424,8 +424,8 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
 
                   {/* Tooltip for Agent Behavior */}
                   <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 hidden group-hover/agent:block w-80 p-4 bg-slate-900 text-slate-300 text-xs rounded-lg shadow-2xl z-[100] border border-slate-700 max-h-64 overflow-y-auto">
-                    <p className="font-semibold text-purple-300 mb-1">Comportamento</p>"
-                    {board.agentPersona?.behavior}"
+                    <p className="font-semibold text-purple-300 mb-1">{t('behaviorLabel')}</p>
+                    {board.agentPersona?.behavior}
                   </div>
                 </div>
               </div>
@@ -435,7 +435,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                 <div className="flex items-center gap-2 mb-1">
                   <DoorOpen size={12} className="text-orange-500" />
                   <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                    Entrada
+                    {t('entrySection')}
                   </span>
                 </div>
 

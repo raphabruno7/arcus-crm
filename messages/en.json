@@ -157,7 +157,9 @@
     "boardSelector": {
       "editBoardTitle": "Edit board",
       "deleteBoardTitle": "Delete board",
-      "createNewBoard": "Create new board"
+      "createNewBoard": "Create new board",
+      "partOfJourneyYes": "Part of journey: Yes",
+      "partOfJourneyNo": "Part of journey: No"
     },
     "moveToStageModal": {
       "title": "Move to Stage",

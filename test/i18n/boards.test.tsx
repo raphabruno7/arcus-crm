@@ -1,17 +1,27 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import { vi } from 'vitest';
 import enMessages from '@/messages/en.json';
 import { KanbanBoard } from '@/features/boards/components/Kanban/KanbanBoard';
 import { DealCard } from '@/features/boards/components/Kanban/DealCard';
 import { KanbanHeader } from '@/features/boards/components/Kanban/KanbanHeader';
+import { BoardSelector } from '@/features/boards/components/BoardSelector';
+import { BoardStrategyHeader } from '@/features/boards/components/Kanban/BoardStrategyHeader';
 import { DeleteBoardModal } from '@/features/boards/components/Modals/DeleteBoardModal';
 import { AIProcessingModal } from '@/features/boards/components/Modals/AIProcessingModal';
 import { Board, BoardStage, DealView } from '@/types';
 
+let mockCRM = {
+  lifecycleStages: [] as Array<{ id: string; name: string }>,
+  deals: [] as DealView[],
+  boards: [] as Board[],
+  updateBoard: vi.fn(),
+  setIsGlobalAIOpen: vi.fn(),
+};
+
 vi.mock('@/context/CRMContext', () => ({
-  useCRM: () => ({ lifecycleStages: [] }),
+  useCRM: () => mockCRM,
 }));
 
 const stage: BoardStage = {
@@ -59,6 +69,25 @@ function wrap(ui: React.ReactNode) {
 }
 
 describe('KanbanBoard i18n', () => {
+  test('renders legacy board description in English when locale is en', () => {
+    const boardWithLegacyDescription: Board = {
+      ...activeBoard,
+      description: 'Parte da jornada: Sim',
+    };
+
+    wrap(
+      <BoardSelector
+        boards={[boardWithLegacyDescription]}
+        activeBoard={boardWithLegacyDescription}
+        onSelectBoard={() => {}}
+        onCreateBoard={() => {}}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /sales/i }));
+    expect(screen.getByText('Part of journey: Yes')).toBeInTheDocument();
+  });
+
   test('renders "No deals" in English when column is empty', () => {
     wrap(
       <KanbanBoard
@@ -194,5 +223,38 @@ describe('AIProcessingModal i18n', () => {
     wrap(<AIProcessingModal isOpen={true} currentStep="analyzing" phase="strategy" />);
     expect(screen.getByRole('heading', { level: 3, name: 'Defining Strategy' })).toBeInTheDocument();
     expect(screen.getByText('Reading Board Context...')).toBeInTheDocument();
+  });
+});
+
+describe('BoardStrategyHeader i18n', () => {
+  test('renders strategy labels in English', () => {
+    const strategyBoard: Board = {
+      ...activeBoard,
+      goal: {
+        targetValue: '100',
+        type: 'number',
+        kpi: 'MQLs',
+        description: 'Lead generation objective',
+      },
+      agentPersona: {
+        name: 'Closer',
+        role: 'Sales Rep',
+        behavior: 'Direct and consultative',
+      },
+      entryTrigger: 'Inbound and outbound leads',
+    };
+
+    mockCRM = {
+      ...mockCRM,
+      boards: [strategyBoard],
+      deals: [],
+    };
+
+    wrap(<BoardStrategyHeader board={strategyBoard} />);
+
+    expect(screen.getByText('Goal')).toBeInTheDocument();
+    expect(screen.getByText('Agent')).toBeInTheDocument();
+    expect(screen.getByText('Entry')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /talk/i })).toBeInTheDocument();
   });
 });

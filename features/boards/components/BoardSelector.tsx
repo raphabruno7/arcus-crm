@@ -43,6 +43,23 @@ export const BoardSelector: React.FC<BoardSelectorProps> = ({
   const t = useTranslations('boards.boardSelector');
   const [isOpen, setIsOpen] = useState(false);
 
+  const getLocalizedBoardDescription = (description?: string) => {
+    if (!description) return description;
+
+    // Backward compatibility: legacy descriptions were persisted in PT-BR.
+    const normalized = description.trim().toLowerCase();
+    if (!normalized.startsWith('parte da jornada:') && !normalized.startsWith('part of journey:')) {
+      return description;
+    }
+
+    const isYes = /:\s*(sim|yes)\s*$/i.test(normalized);
+    const isNo = /:\s*(nao|não|no)\s*$/i.test(normalized);
+    if (isYes) return t('partOfJourneyYes');
+    if (isNo) return t('partOfJourneyNo');
+
+    return description;
+  };
+
   return (
     <div className="relative">
       <button
@@ -90,7 +107,7 @@ export const BoardSelector: React.FC<BoardSelectorProps> = ({
                     </p>
                     {board.description && (
                       <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                        {board.description}
+                        {getLocalizedBoardDescription(board.description)}
                       </p>
                     )}
                   </div>

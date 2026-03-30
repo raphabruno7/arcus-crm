@@ -157,7 +157,9 @@
     "boardSelector": {
       "editBoardTitle": "Editar board",
       "deleteBoardTitle": "Excluir board",
-      "createNewBoard": "Criar novo board"
+      "createNewBoard": "Criar novo board",
+      "partOfJourneyYes": "Parte da jornada: Sim",
+      "partOfJourneyNo": "Parte da jornada: Não"
     },
     "moveToStageModal": {
       "title": "Mover para Estágio",
