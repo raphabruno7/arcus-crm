@@ -6,6 +6,8 @@ import enMessages from '@/messages/en.json';
 import { KanbanBoard } from '@/features/boards/components/Kanban/KanbanBoard';
 import { DealCard } from '@/features/boards/components/Kanban/DealCard';
 import { KanbanHeader } from '@/features/boards/components/Kanban/KanbanHeader';
+import { DeleteBoardModal } from '@/features/boards/components/Modals/DeleteBoardModal';
+import { AIProcessingModal } from '@/features/boards/components/Modals/AIProcessingModal';
 import { Board, BoardStage, DealView } from '@/types';
 
 vi.mock('@/context/CRMContext', () => ({
@@ -159,5 +161,38 @@ describe('KanbanHeader i18n', () => {
     expect(screen.getByRole('option', { name: 'Open' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'All Owners' })).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Filter deals or companies...')).toBeInTheDocument();
+  });
+});
+
+describe('DeleteBoardModal i18n', () => {
+  test('renders title and cancel button in English', () => {
+    wrap(
+      <DeleteBoardModal
+        isOpen={true}
+        onClose={() => {}}
+        onConfirm={() => {}}
+        boardName="Sales"
+        dealCount={0}
+        availableBoards={[]}
+        onSelectTargetBoard={() => {}}
+      />
+    );
+    expect(screen.getByRole('heading', { name: 'Delete Board' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+  });
+});
+
+describe('AIProcessingModal i18n', () => {
+  test('renders structure phase title in English', () => {
+    wrap(<AIProcessingModal isOpen={true} currentStep="analyzing" phase="structure" />);
+    expect(screen.getByText('Creating your CRM')).toBeInTheDocument();
+    expect(screen.getByText('Analyzing your business...')).toBeInTheDocument();
+  });
+
+  test('renders strategy phase title in English', () => {
+    wrap(<AIProcessingModal isOpen={true} currentStep="analyzing" phase="strategy" />);
+    expect(screen.getByRole('heading', { level: 3, name: 'Defining Strategy' })).toBeInTheDocument();
+    expect(screen.getByText('Reading Board Context...')).toBeInTheDocument();
   });
 });
