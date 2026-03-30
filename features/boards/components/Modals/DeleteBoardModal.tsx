@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, AlertTriangle, ChevronDown, Trash2, FolderOutput } from 'lucide-react';
 import { Board } from '@/types';
+import { useTranslations } from 'next-intl';
 
 interface DeleteBoardModalProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
   selectedTargetBoardId,
   onSelectTargetBoard,
 }) => {
+  const t = useTranslations('boards.deleteBoardModal');
   if (!isOpen) return null;
 
   const hasDeals = dealCount > 0;
@@ -72,12 +74,13 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
               <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-              Excluir Board
+              {t('title')}
             </h2>
           </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 dark:hover:bg-dark-hover rounded-lg transition-colors"
+            aria-label={t('close')}
           >
             <X className="w-5 h-5 text-slate-500" />
           </button>
@@ -89,8 +92,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
             <>
               <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
                 <p className="text-amber-800 dark:text-amber-200 text-sm">
-                  O board <strong>"{boardName}"</strong> possui{' '}
-                  <strong>{dealCount} negócio{dealCount > 1 ? 's' : ''}</strong>.
+                  {t('hasDealsWarning', { name: boardName, count: dealCount })}
                 </p>
               </div>
 
@@ -98,7 +100,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
                 <>
                   <div className="space-y-3">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                      O que fazer com os negócios?
+                      {t('whatToDoWithDeals')}
                     </label>
                     
                     {/* Opções de destino */}
@@ -123,7 +125,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
                               ? 'text-primary-700 dark:text-primary-300 font-medium'
                               : 'text-slate-700 dark:text-slate-300'
                           }`}>
-                            Mover para "{board.name}"
+                            {t('moveToPrefix', { name: board.name })}
                           </span>
                         </button>
                       ))}
@@ -147,7 +149,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
                             ? 'text-red-700 dark:text-red-300 font-medium'
                             : 'text-slate-700 dark:text-slate-300'
                         }`}>
-                          Excluir negócios também
+                          {t('deleteDealsAlso')}
                         </span>
                       </button>
                     </div>
@@ -155,13 +157,13 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
 
                   {selectedTargetBoardId && selectedTargetBoardId !== '__DELETE__' && (
                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Os negócios serão movidos para o primeiro estágio do board selecionado.
+                      {t('dealsWillBeMoved')}
                     </p>
                   )}
                   
                   {selectedTargetBoardId === '__DELETE__' && (
                     <p className="text-sm text-red-600 dark:text-red-400">
-                      ⚠️ Isso vai excluir permanentemente todos os negócios!
+                      {t('permanentWarning')}
                     </p>
                   )}
                 </>
@@ -169,7 +171,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
                 // Só tem 1 board - oferece apenas excluir os deals
                 <>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Este é o único board. Para excluí-lo, os negócios também serão removidos.
+                    {t('onlyBoardNote')}
                   </p>
                   <button
                     onClick={() => onSelectTargetBoard('__DELETE__')}
@@ -180,15 +182,14 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
                     }`}
                   >
                     <Trash2 className="w-4 h-4" />
-                    Excluir negócios junto com o board
+                    {t('deleteDealsWithBoard')}
                   </button>
                 </>
               )}
             </>
           ) : (
             <p className="text-slate-600 dark:text-slate-400">
-              Tem certeza que deseja excluir o board <strong>"{boardName}"</strong>?
-              Esta ação não pode ser desfeita.
+              {t('confirmNoDealQuestion', { name: boardName })}
             </p>
           )}
         </div>
@@ -199,7 +200,7 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
             onClick={onClose}
             className="flex-1 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-dark-hover rounded-xl font-medium transition-colors"
           >
-            Cancelar
+            {t('cancel')}
           </button>
           <button
             onClick={onConfirm}
@@ -211,10 +212,10 @@ export const DeleteBoardModal: React.FC<DeleteBoardModalProps> = ({
             }`}
           >
             {selectedTargetBoardId === '__DELETE__' 
-              ? 'Excluir Tudo' 
+              ? t('deleteAll')
               : hasDeals && selectedTargetBoardId 
-                ? 'Mover e Excluir' 
-                : 'Excluir'}
+                ? t('moveAndDelete')
+                : t('delete')}
           </button>
         </div>
       </div>

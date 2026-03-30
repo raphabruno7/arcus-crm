@@ -1,5 +1,6 @@
 import React from 'react';
 import { Loader2, CheckCircle2, Circle, Sparkles, BrainCircuit, LayoutTemplate, Target, Eye, BookOpen } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export type ProcessingStep = 'analyzing' | 'structure' | 'strategy' | 'finalizing' | 'complete';
 export type SimulatorPhase = 'structure' | 'strategy';
@@ -17,48 +18,49 @@ interface AIProcessingModalProps {
  * @returns {Element | null} Retorna um valor do tipo `Element | null`.
  */
 export const AIProcessingModal: React.FC<AIProcessingModalProps> = ({ isOpen, currentStep, phase = 'structure' }) => {
+    const t = useTranslations('boards.aiProcessingModal');
     if (!isOpen) return null;
 
     // Define steps based on phase
     const structureSteps = [
         {
             id: 'analyzing',
-            label: 'Analisando seu negócio...',
+            label: t('stepAnalyzingLabel'),
             icon: BrainCircuit,
-            description: 'Entendendo o contexto e necessidades.'
+            description: t('stepAnalyzingDesc')
         },
         {
             id: 'structure',
-            label: 'Desenhando Processo',
+            label: t('stepStructureLabel'),
             icon: LayoutTemplate,
-            description: 'Criando fases do funil e automações.'
+            description: t('stepStructureDesc')
         },
         {
             id: 'finalizing',
-            label: 'Preparando Preview...',
+            label: t('stepFinalizingLabel'),
             icon: Eye,
-            description: 'Gerando visualização interativa.'
+            description: t('stepFinalizingDesc')
         }
     ];
 
     const strategySteps = [
         {
             id: 'analyzing', // Reusing ID for simplicity in state mapping
-            label: 'Lendo Contexto do Board...',
+            label: t('stepReadingContextLabel'),
             icon: BookOpen,
-            description: 'Analisando a estrutura final aprovada.'
+            description: t('stepReadingContextDesc')
         },
         {
             id: 'strategy',
-            label: 'Definindo Estratégia',
+            label: t('stepStrategyLabel'),
             icon: Target,
-            description: 'Configurando metas e persona do agente.'
+            description: t('stepStrategyDesc')
         },
         {
             id: 'finalizing',
-            label: 'Finalizando Criação...',
+            label: t('stepFinalizingStrategyLabel'),
             icon: Sparkles,
-            description: 'Montando seu board personalizado.'
+            description: t('stepFinalizingStrategyDesc')
         }
     ];
 
@@ -86,10 +88,10 @@ export const AIProcessingModal: React.FC<AIProcessingModalProps> = ({ isOpen, cu
                         <Sparkles className="text-primary-600 dark:text-primary-400 animate-pulse drop-shadow-sm" size={32} />
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                        {phase === 'structure' ? 'Criando seu CRM' : 'Definindo Estratégia'}
+                        {phase === 'structure' ? t('titleStructure') : t('titleStrategy')}
                     </h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">
-                        {phase === 'structure' ? 'A IA está desenhando seu processo...' : 'A IA está alinhando metas e agentes...'}
+                        {phase === 'structure' ? t('subtitleStructure') : t('subtitleStrategy')}
                     </p>
                 </div>
 

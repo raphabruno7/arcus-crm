@@ -4,6 +4,7 @@ import { DealCard } from './DealCard';
 import { isDealRotting, getActivityStatus } from '@/features/boards/hooks/useBoardsController';
 import { MoveToStageModal } from '../Modals/MoveToStageModal';
 import { formatCurrency } from '@/lib/currency';
+import { useTranslations } from 'next-intl';
 
 import { useCRM } from '@/context/CRMContext';
 
@@ -115,6 +116,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   onMoveDealToStage,
 }) => {
   const { lifecycleStages } = useCRM();
+  const t = useTranslations('boards.kanbanBoard');
   const boardCurrencyCode = filteredDeals[0]?.currencyCode || 'BRL';
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
   
@@ -238,7 +240,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 {linkedStageName ? (
                   <span className="text-[10px] uppercase font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-1.5 py-0.5 rounded border border-primary-100 dark:border-primary-800/50 flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-primary-500 animate-pulse"></span>
-                    Promove para: {linkedStageName}
+                    {t('promotesToLabel', { name: linkedStageName })}
                   </span>
                 ) : (
                   <span className="text-[10px] px-1.5 py-0.5 opacity-0 select-none">
@@ -248,7 +250,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
               </div>
 
               <div className="text-xs text-slate-500 dark:text-slate-400 font-medium text-right">
-                Total:{' '}
+                {t('stageTotal')}{' '}
                 <span className="text-slate-900 dark:text-white font-mono">
                   {formatCurrency(stageValue, boardCurrencyCode)}
                 </span>
@@ -260,12 +262,12 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             >
               {stageDeals.length === 0 && !draggingId && (
                 <div className="h-full flex items-center justify-center text-slate-400 dark:text-slate-600 text-sm py-8">
-                  Sem negócios
+                  {t('noDeals')}
                 </div>
               )}
               {isOver && stageDeals.length === 0 && (
                 <div className="h-full flex items-center justify-center text-green-500 dark:text-green-400 text-sm py-8 font-bold animate-pulse pointer-events-none">
-                  ✓ Solte aqui!
+                  {t('dropHere')}
                 </div>
               )}
               {stageDeals.map(deal => (
