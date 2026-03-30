@@ -14,7 +14,8 @@ import { Board, CurrencyCode } from '@/types';
 import { useCRM } from '@/context/CRMContext';
 import { currencySymbol } from '@/lib/currency';
 import { useFormatCurrency } from '@/hooks/useFormatCurrency';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { localizeLegacyBoardText } from '@/features/boards/lib/localizeLegacyText';
 
 interface BoardStrategyHeaderProps {
   board: Board;
@@ -28,6 +29,7 @@ interface BoardStrategyHeaderProps {
  */
 export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board }) => {
   const { updateBoard, setIsGlobalAIOpen, boards, deals } = useCRM();
+  const locale = useLocale();
   const t = useTranslations('boards.boardStrategyHeader');
   const { formatCurrency } = useFormatCurrency();
   const [isEditing, setIsEditing] = useState(false);
@@ -419,7 +421,7 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
                     {board.agentPersona?.name}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
-                    {board.agentPersona?.role}
+                    {localizeLegacyBoardText(board.agentPersona?.role, locale)}
                   </p>
 
                   {/* Tooltip for Agent Behavior */}
@@ -441,11 +443,11 @@ export const BoardStrategyHeader: React.FC<BoardStrategyHeaderProps> = ({ board 
 
                 <div className="group/trigger relative cursor-help">
                   <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
-                    {board.entryTrigger}
+                    {localizeLegacyBoardText(board.entryTrigger, locale)}
                   </p>
                   {/* Tooltip for Full Trigger */}
                   <div className="absolute right-0 top-full mt-2 hidden group-hover/trigger:block w-80 p-4 bg-slate-900 text-slate-300 text-xs rounded-lg shadow-2xl z-[100] border border-slate-700 max-h-64 overflow-y-auto">
-                    {board.entryTrigger}
+                    {localizeLegacyBoardText(board.entryTrigger, locale)}
                   </div>
                 </div>
               </div>

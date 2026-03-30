@@ -4,7 +4,8 @@ import { DealCard } from './DealCard';
 import { isDealRotting, getActivityStatus } from '@/features/boards/hooks/useBoardsController';
 import { MoveToStageModal } from '../Modals/MoveToStageModal';
 import { formatCurrency } from '@/lib/currency';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { localizeLegacyBoardText } from '@/features/boards/lib/localizeLegacyText';
 
 import { useCRM } from '@/context/CRMContext';
 
@@ -116,6 +117,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   onMoveDealToStage,
 }) => {
   const { lifecycleStages } = useCRM();
+  const locale = useLocale();
   const t = useTranslations('boards.kanbanBoard');
   const boardCurrencyCode = filteredDeals[0]?.currencyCode || 'BRL';
   const [dragOverStage, setDragOverStage] = useState<string | null>(null);
@@ -228,7 +230,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             >
               <div className="flex justify-between items-center mb-1">
                 <span className="font-bold text-slate-700 dark:text-slate-200 font-display text-sm tracking-wide uppercase">
-                  {stage.label}
+                  {localizeLegacyBoardText(stage.label, locale)}
                 </span>
                 <span className="text-xs font-bold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded text-slate-600 dark:text-slate-300">
                   {stageDeals.length}
@@ -240,7 +242,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 {linkedStageName ? (
                   <span className="text-[10px] uppercase font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-1.5 py-0.5 rounded border border-primary-100 dark:border-primary-800/50 flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-primary-500 animate-pulse"></span>
-                    {t('promotesToLabel', { name: linkedStageName })}
+                    {t('promotesToLabel', { name: localizeLegacyBoardText(linkedStageName, locale) })}
                   </span>
                 ) : (
                   <span className="text-[10px] px-1.5 py-0.5 opacity-0 select-none">

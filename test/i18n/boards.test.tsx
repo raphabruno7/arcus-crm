@@ -72,6 +72,7 @@ describe('KanbanBoard i18n', () => {
   test('renders legacy board description in English when locale is en', () => {
     const boardWithLegacyDescription: Board = {
       ...activeBoard,
+      name: '1. Captação / Leads',
       description: 'Parte da jornada: Sim',
     };
 
@@ -84,14 +85,16 @@ describe('KanbanBoard i18n', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /sales/i }));
+    fireEvent.click(screen.getByRole('button', { name: /lead capture/i }));
+    expect(screen.getAllByText('1. Lead Capture').length).toBeGreaterThan(0);
     expect(screen.getByText('Part of journey: Yes')).toBeInTheDocument();
   });
 
   test('renders "No deals" in English when column is empty', () => {
+    const legacyStage: BoardStage = { ...stage, label: 'Contatado' };
     wrap(
       <KanbanBoard
-        stages={[stage]}
+        stages={[legacyStage]}
         filteredDeals={[]}
         draggingId={null}
         handleDragStart={() => {}}
@@ -104,6 +107,7 @@ describe('KanbanBoard i18n', () => {
         setLastMouseDownDealId={() => {}}
       />
     );
+    expect(screen.getByText('Contacted')).toBeInTheDocument();
     expect(screen.getByText('No deals')).toBeInTheDocument();
   });
 
@@ -238,10 +242,10 @@ describe('BoardStrategyHeader i18n', () => {
       },
       agentPersona: {
         name: 'Closer',
-        role: 'Sales Rep',
+        role: 'Captação e Qualificação',
         behavior: 'Direct and consultative',
       },
-      entryTrigger: 'Inbound and outbound leads',
+      entryTrigger: 'Leads vindos de ads, orgânico, direct, WhatsApp ou página de captura.',
     };
 
     mockCRM = {
@@ -255,6 +259,8 @@ describe('BoardStrategyHeader i18n', () => {
     expect(screen.getByText('Goal')).toBeInTheDocument();
     expect(screen.getByText('Agent')).toBeInTheDocument();
     expect(screen.getByText('Entry')).toBeInTheDocument();
+    expect(screen.getByText('Capture and Qualification')).toBeInTheDocument();
+    expect(screen.getAllByText('Leads from ads, organic, direct, WhatsApp, or landing page.').length).toBeGreaterThan(0);
     expect(screen.getByRole('button', { name: /talk/i })).toBeInTheDocument();
   });
 });

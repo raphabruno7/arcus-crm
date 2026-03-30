@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ChevronDown, Plus, Settings, Trash2 } from 'lucide-react';
 import { Board } from '@/types';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { localizeLegacyBoardText } from '@/features/boards/lib/localizeLegacyText';
 
 interface BoardSelectorProps {
   boards: Board[];
@@ -40,6 +41,7 @@ export const BoardSelector: React.FC<BoardSelectorProps> = ({
   onEditBoard,
   onDeleteBoard,
 }) => {
+  const locale = useLocale();
   const t = useTranslations('boards.boardSelector');
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,7 +71,7 @@ export const BoardSelector: React.FC<BoardSelectorProps> = ({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary-500" />
           <span className="font-medium text-slate-900 dark:text-white">
-            {activeBoard.name}
+            {localizeLegacyBoardText(activeBoard.name, locale)}
           </span>
         </div>
         <ChevronDown size={16} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -103,7 +105,7 @@ export const BoardSelector: React.FC<BoardSelectorProps> = ({
                         ? 'text-primary-600 dark:text-primary-400'
                         : 'text-slate-700 dark:text-slate-200'
                     }`}>
-                      {board.name}
+                      {localizeLegacyBoardText(board.name, locale)}
                     </p>
                     {board.description && (
                       <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
