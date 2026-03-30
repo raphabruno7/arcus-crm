@@ -10,6 +10,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { Activity } from '@/types';
+import { localizeLegacyBoardText } from '@/features/boards/lib/localizeLegacyText';
 
 interface ActivityFeedItemProps {
     activity: Activity;
@@ -22,10 +23,13 @@ interface ActivityFeedItemProps {
  * @returns {Element} Retorna um valor do tipo `Element`.
  */
 export const ActivityFeedItem: React.FC<ActivityFeedItemProps> = ({ activity }) => {
-    const t = useTranslations('dashboard.activityFeed');
-    const locale = useLocale();
+  const t = useTranslations('dashboard.activityFeed');
+  const locale = useLocale();
+  const localizedTitle = localizeLegacyBoardText(activity.title, locale);
+  const localizedDescription = localizeLegacyBoardText(activity.description, locale);
+  const localizedDealTitle = localizeLegacyBoardText(activity.dealTitle, locale);
     // Smart Icon Logic: Corrigir visualmente inconsistências de dados legados/seed
-    const titleLower = activity.title.toLowerCase();
+    const titleLower = localizedTitle.toLowerCase();
     const visualType =
         titleLower.includes('call') || titleLower.includes('ligação')
             ? 'CALL'
@@ -101,17 +105,17 @@ export const ActivityFeedItem: React.FC<ActivityFeedItemProps> = ({ activity }) 
             </div>
             <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                    {activity.title}
+                    {localizedTitle}
                 </p>
-                {activity.dealTitle && (
+                {localizedDealTitle && (
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
                         {t('inDeal')}{' '}
-                        <span className="font-medium text-slate-600 dark:text-slate-300">{activity.dealTitle}</span>
+                        <span className="font-medium text-slate-600 dark:text-slate-300">{localizedDealTitle}</span>
                     </p>
                 )}
-                {activity.description && (
+                {localizedDescription && (
                     <p className="text-xs text-slate-400 mt-1 line-clamp-1 italic">
-                        "{activity.description}"
+                        "{localizedDescription}"
                     </p>
                 )}
             </div>

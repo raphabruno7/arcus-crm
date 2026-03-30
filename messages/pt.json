@@ -506,6 +506,11 @@
     "activityFeed": {
       "inDeal": "em"
     },
+    "funnelChart": {
+      "noData": "Sem dados",
+      "quantity": "Quantidade",
+      "dealsCount": "{count} negócios"
+    },
     "pipelineAlertsModal": {
       "title": "Alertas de Pipeline",
       "needsAttention": "{count} itens precisam de atenção",

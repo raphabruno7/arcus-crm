@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useCRM } from '@/context/CRMContext';
 import { useToast } from '@/context/ToastContext';
 import { TrendingUp, TrendingDown, Users, DollarSign, Target, Clock, MoreVertical, AlertTriangle } from 'lucide-react';
@@ -11,6 +11,7 @@ import { useDashboardMetrics, PeriodFilter, getComparisonLabels } from './hooks/
 import { PeriodFilterSelect } from '@/components/filters/PeriodFilterSelect';
 import { LazyFunnelChart, ChartWrapper } from '@/components/charts';
 import { formatCurrencyCompact } from '@/lib/currency';
+import { localizeLegacyBoardText } from '@/features/boards/lib/localizeLegacyText';
 
 
 /**
@@ -31,6 +32,7 @@ function formatChange(value: number): { text: string; isPositive: boolean } {
  */
 const DashboardPage: React.FC = () => {
   const router = useRouter();
+  const locale = useLocale();
   const t = useTranslations('dashboard.page');
   const comparisonT = useTranslations('common.periodFilter.comparison');
   const comparisonLabels = getComparisonLabels(comparisonT);
@@ -95,6 +97,17 @@ const DashboardPage: React.FC = () => {
 
   const selectedBoard = React.useMemo(() => boards.find(b => b.id === selectedBoardId), [boards, selectedBoardId]);
   const currencyCode = selectedBoard?.currencyCode || 'BRL';
+  const displayCurrencyCode = locale.toLowerCase().startsWith('en') ? 'USD' : currencyCode;
+
+  const formatMoneyCompact = React.useCallback(
+    (value: number) => formatCurrencyCompact(value, displayCurrencyCode, undefined, locale),
+    [displayCurrencyCode, locale]
+  );
+
+  const localizedFunnelData = React.useMemo(
+    () => funnelData.map((item) => ({ ...item, name: localizeLegacyBoardText(item.name, locale) })),
+    [funnelData, locale]
+  );
 
   // Formatar variações para exibição
   const pipelineChangeInfo = formatChange(changes.pipeline);
@@ -121,7 +134,7 @@ const DashboardPage: React.FC = () => {
             className="px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             {boards.map(board => (
-              <option key={board.id} value={board.id}>{board.name}</option>
+              <option key={board.id} value={board.id}>{localizeLegacyBoardText(board.name, locale)}</option>
             ))}
           </select>
 
@@ -150,7 +163,7 @@ const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
         <StatCard
           title={t('pipelineTotal')}
-          value={formatCurrencyCompact(pipelineValue, currencyCode)}
+          value={formatMoneyCompact(pipelineValue)}
           subtext={pipelineChangeInfo.text}
           subtextPositive={pipelineChangeInfo.isPositive}
           icon={DollarSign}
@@ -180,7 +193,7 @@ const DashboardPage: React.FC = () => {
         />
         <StatCard
           title={t('wonRevenue')}
-          value={formatCurrencyCompact(wonRevenue, currencyCode)}
+          value={formatMoneyCompact(wonRevenue)}
           subtext={revenueChangeInfo.text}
           subtextPositive={revenueChangeInfo.isPositive}
           icon={TrendingUp}
@@ -262,7 +275,7 @@ const DashboardPage: React.FC = () => {
               {t('stagnantDescription')}
             </p>
             <p className="text-xs text-slate-400 mt-1">
-              {t('atRisk', { value: formatCurrencyCompact(stagnantDealsValue, currencyCode) })}
+              {t('atRisk', { value: formatMoneyCompact(stagnantDealsValue) })}
             </p>
           </div>
 
@@ -272,7 +285,7 @@ const DashboardPage: React.FC = () => {
             </h3>
             <div className="flex items-end gap-2">
               <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                {formatCurrencyCompact(avgLTV, currencyCode)}
+                {formatMoneyCompact(avgLTV)}
               </span>
               <span className="text-xs text-green-500 font-bold mb-1">{t('average')}</span>
             </div>
@@ -293,7 +306,7 @@ const DashboardPage: React.FC = () => {
           <div className="flex-1 min-h-0 relative">
             <div className="absolute inset-0">
               <ChartWrapper height="100%">
-                <LazyFunnelChart data={funnelData} />
+                <LazyFunnelChart data={localizedFunnelData} />
               </ChartWrapper>
             </div>
           </div>

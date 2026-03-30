@@ -1,17 +1,22 @@
 import type { CurrencyCode } from '@/types';
 
-function normalizeCurrencyCode(input: CurrencyCode | string | null | undefined): CurrencyCode {
+type DisplayCurrencyCode = CurrencyCode | 'USD';
+
+function normalizeCurrencyCode(input: CurrencyCode | string | null | undefined): DisplayCurrencyCode {
+  if (input === 'USD') return 'USD';
   if (input === 'EUR') return 'EUR';
   return 'BRL';
 }
 
-function localeForCurrency(currencyCode: CurrencyCode, appLocale?: string): string {
+function localeForCurrency(currencyCode: DisplayCurrencyCode, appLocale?: string): string {
   if (appLocale === 'en') {
     return currencyCode === 'EUR' ? 'en-IE' : 'en-US';
   }
   switch (currencyCode) {
     case 'EUR':
       return 'pt-PT';
+    case 'USD':
+      return 'en-US';
     case 'BRL':
     default:
       return 'pt-BR';
@@ -20,7 +25,7 @@ function localeForCurrency(currencyCode: CurrencyCode, appLocale?: string): stri
 
 const formatters = new Map<string, Intl.NumberFormat>();
 
-function getFormatter(currencyCode: CurrencyCode, opts?: Intl.NumberFormatOptions, appLocale?: string): Intl.NumberFormat {
+function getFormatter(currencyCode: DisplayCurrencyCode, opts?: Intl.NumberFormatOptions, appLocale?: string): Intl.NumberFormat {
   const locale = localeForCurrency(currencyCode, appLocale);
   const key = JSON.stringify({ locale, currencyCode, opts: opts ?? {} });
   const cached = formatters.get(key);
@@ -47,7 +52,7 @@ export function formatCurrency(
   try {
     return getFormatter(currencyCode, opts, appLocale).format(safe);
   } catch {
-    const prefix = currencyCode === 'EUR' ? '€' : 'R$';
+    const prefix = currencyCode === 'EUR' ? '€' : currencyCode === 'USD' ? '$' : 'R$';
     return `${prefix} ${safe.toFixed(2)}`;
   }
 }
@@ -66,6 +71,8 @@ export function formatCurrencyCompact(
 }
 
 export function currencySymbol(currencyCodeInput?: CurrencyCode | string | null): string {
-  return normalizeCurrencyCode(currencyCodeInput) === 'EUR' ? '€' : 'R$';
+  const normalized = normalizeCurrencyCode(currencyCodeInput);
+  if (normalized === 'EUR') return '€';
+  if (normalized === 'USD') return '$';
+  return 'R$';
 }
-

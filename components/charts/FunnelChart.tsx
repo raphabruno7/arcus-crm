@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import {
   BarChart,
   Bar,
@@ -22,10 +23,12 @@ interface FunnelChartProps {
  * @returns {Element} Retorna um valor do tipo `Element`.
  */
 export const FunnelChart: React.FC<FunnelChartProps> = ({ data }) => {
+  const t = useTranslations('dashboard.funnelChart');
+
   if (!data || data.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-slate-400 text-sm">
-        Sem dados
+        {t('noData')}
       </div>
     );
   }
@@ -50,7 +53,7 @@ export const FunnelChart: React.FC<FunnelChartProps> = ({ data }) => {
         />
         <Tooltip
           cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-          formatter={(value: number) => [`${value} negócios`, 'Quantidade']}
+          formatter={(value: number) => [t('dealsCount', { count: value }), t('quantity')]}
           contentStyle={{
             backgroundColor: 'var(--chart-tooltip-bg)',
             border: '1px solid var(--chart-tooltip-border)',
