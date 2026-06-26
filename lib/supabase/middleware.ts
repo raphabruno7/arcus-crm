@@ -88,7 +88,12 @@ export async function updateSession(request: NextRequest) {
 
     // Protected routes - redirect to login if not authenticated
     const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/auth')
-    const isPublicRoute = pathname === '/' || pathname.startsWith('/join') || isSetupRoute || isInstallRoute
+    // Reset de password: público porque o token de recovery chega no fragmento da
+    // URL (#access_token), que não é enviado ao servidor — o middleware veria user=null
+    // e redirecionaria antes do client processar o token. Não pode ser isAuthRoute,
+    // senão a sessão de recovery seria redirecionada para /dashboard (linha abaixo).
+    const isPasswordResetRoute = pathname.startsWith('/forgot-password') || pathname.startsWith('/reset-password')
+    const isPublicRoute = pathname === '/' || pathname.startsWith('/join') || isSetupRoute || isInstallRoute || isPasswordResetRoute
 
     if (!user && !isAuthRoute && !isPublicRoute) {
         const url = request.nextUrl.clone()

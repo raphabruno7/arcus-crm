@@ -6,7 +6,26 @@
     "password": "Password",
     "submit": "Sign in",
     "copyright": "Arcus CRM. All rights reserved.",
-    "errorNoSupabase": "Supabase not configured. Please set up environment variables."
+    "errorNoSupabase": "Supabase not configured. Please set up environment variables.",
+    "forgotPassword": "Forgot password?"
+  },
+  "forgotPassword": {
+    "title": "Recover access",
+    "subtitle": "Enter your email and we will send you a link.",
+    "email": "Email",
+    "submit": "Send recovery link",
+    "sent": "If an account exists for that email, we have sent a recovery link.",
+    "backToLogin": "Back to login"
+  },
+  "resetPassword": {
+    "title": "Set a new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "submit": "Save new password",
+    "mismatch": "Passwords do not match.",
+    "tooShort": "Password must be at least 8 characters.",
+    "invalidLink": "This link is invalid or has expired.",
+    "requestNew": "Request a new link"
   },
   "setup": {
     "title": "Welcome to Arcus CRM",
@@ -587,53 +606,81 @@
     }
   },
   "inbox": {
-    "page": {
-      "subtitle": "Your work desk.",
-      "seedButton": "Seed Inbox"
+    "focusView": {
+      "actionsLabel": "Actions",
+      "snooze": "Snooze",
+      "done": "Done",
+      "skip": "Skip",
+      "navLabel": "Navigate items",
+      "prevAriaLabel": "Previous item",
+      "nextAriaLabel": "Next item",
+      "linkContext": "Link context",
+      "linkContextTitle": "Link context",
+      "closeAriaLabel": "Close",
+      "searchDealPlaceholder": "Search deal by title…"
     },
-    "viewMode": {
-      "ariaLabel": "View mode",
-      "overview": "Overview",
-      "list": "List",
-      "focus": "Focus"
+    "listView": {
+      "applyAriaLabel": "Apply suggestion",
+      "applyTitle": "Apply",
+      "snoozeAriaLabel": "Snooze suggestion",
+      "snoozeTitle": "Snooze",
+      "discardAriaLabel": "Discard suggestion",
+      "discardTitle": "Discard",
+      "aiSuggestions": "AI Suggestions",
+      "overdueTitle": "Overdue",
+      "meetingsTodayTitle": "Today's Meetings",
+      "tasksTodayTitle": "Today's Tasks",
+      "upcomingTitle": "Upcoming"
     },
-    "overview": {
-      "title": "Overview",
-      "subtitle": "Quick diagnosis for the day without turning into another task list.",
-      "viewList": "View list",
-      "startFocus": "Start focus",
-      "nothingPending": "Nothing pending",
-      "cards": {
-        "overdue": {
-          "label": "Overdue",
-          "priority": "Top priority",
-          "empty": "Everything on track"
-        },
-        "today": {
-          "label": "Today",
-          "withCounts": "{meetings} meetings • {tasks} tasks",
-          "empty": "No tasks for today"
-        },
-        "critical": {
-          "label": "Critical suggestions",
-          "withItems": "Risk/opportunity right now",
-          "empty": "No urgent items"
-        },
-        "pending": {
-          "label": "Pending",
-          "withUpcoming": "{count} upcoming",
-          "empty": "Light backlog"
-        }
-      },
-      "riskTitle": "Risk (rescue and stalled deals)",
-      "opportunitiesTitle": "Opportunities (upsell)",
-      "viewAll": "View all",
-      "noRisks": "No highlighted risks right now.",
-      "noOpportunities": "No highlighted opportunities right now.",
-      "actions": {
-        "apply": "Apply",
-        "open": "Open"
-      }
+    "focusContextPanel": {
+      "health": "Health",
+      "reanalyzeAriaLabel": "Re-analyze with AI",
+      "nextAction": "Next Action",
+      "reanalyzeTitle": "Re-analyze",
+      "executeAs": "Execute as:",
+      "days": "Days",
+      "prob": "Prob",
+      "activities": "Act.",
+      "deal": "Deal",
+      "value": "Value",
+      "probability": "Probability",
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "aiSummary": "AI Summary",
+      "pipeline": "Pipeline",
+      "timeInFunnel": "Time in funnel",
+      "notesPlaceholder": "Write...",
+      "dealNotes": "Deal Notes",
+      "dealNotePlaceholder": "Write a note...",
+      "noNotes": "No notes yet",
+      "generateScript": "Generate Script with AI",
+      "systemLabel": "System",
+      "editTitle": "Edit",
+      "deleteTitle": "Delete",
+      "uploadHint": "Click or drag (max 10MB)",
+      "noFiles": "No files yet"
+    },
+    "aiSuggestions": {
+      "snoozeTitle": "Snooze",
+      "discardTitle": "Discard",
+      "acceptTitle": "Accept"
+    },
+    "callModal": {
+      "openDialerTitle": "Open in dialer",
+      "openDialerAriaLabel": "Open in dialer",
+      "titlePlaceholder": "Ex: Follow-up call",
+      "notesPlaceholder": "What was discussed? Next steps?"
+    },
+    "messageComposer": {
+      "subjectPlaceholder": "Ex: Next steps",
+      "copySubjectTitle": "Copy subject",
+      "subjectCopied": "Subject copied",
+      "rewriteWithAITitle": "Rewrite with AI using cockpit context"
+    },
+    "scriptEditor": {
+      "titlePlaceholder": "Ex: Proposal Follow-up",
+      "scriptPlaceholder": "Hi {name}! 👋\n\nWrite your message here...\n\nUse {name} and {company} as variables.",
+      "noPreview": "No text to preview..."
     }
   },
   "contacts": {
@@ -1301,84 +1348,6 @@
         "confirm": "Delete",
         "cancel": "Cancel"
       }
-    }
-  },
-  "inbox": {
-    "focusView": {
-      "actionsLabel": "Actions",
-      "snooze": "Snooze",
-      "done": "Done",
-      "skip": "Skip",
-      "navLabel": "Navigate items",
-      "prevAriaLabel": "Previous item",
-      "nextAriaLabel": "Next item",
-      "linkContext": "Link context",
-      "linkContextTitle": "Link context",
-      "closeAriaLabel": "Close",
-      "searchDealPlaceholder": "Search deal by title…"
-    },
-    "listView": {
-      "applyAriaLabel": "Apply suggestion",
-      "applyTitle": "Apply",
-      "snoozeAriaLabel": "Snooze suggestion",
-      "snoozeTitle": "Snooze",
-      "discardAriaLabel": "Discard suggestion",
-      "discardTitle": "Discard",
-      "aiSuggestions": "AI Suggestions",
-      "overdueTitle": "Overdue",
-      "meetingsTodayTitle": "Today's Meetings",
-      "tasksTodayTitle": "Today's Tasks",
-      "upcomingTitle": "Upcoming"
-    },
-    "focusContextPanel": {
-      "health": "Health",
-      "reanalyzeAriaLabel": "Re-analyze with AI",
-      "nextAction": "Next Action",
-      "reanalyzeTitle": "Re-analyze",
-      "executeAs": "Execute as:",
-      "days": "Days",
-      "prob": "Prob",
-      "activities": "Act.",
-      "deal": "Deal",
-      "value": "Value",
-      "probability": "Probability",
-      "createdAt": "Created",
-      "updatedAt": "Updated",
-      "aiSummary": "AI Summary",
-      "pipeline": "Pipeline",
-      "timeInFunnel": "Time in funnel",
-      "notesPlaceholder": "Write...",
-      "dealNotes": "Deal Notes",
-      "dealNotePlaceholder": "Write a note...",
-      "noNotes": "No notes yet",
-      "generateScript": "Generate Script with AI",
-      "systemLabel": "System",
-      "editTitle": "Edit",
-      "deleteTitle": "Delete",
-      "uploadHint": "Click or drag (max 10MB)",
-      "noFiles": "No files yet"
-    },
-    "aiSuggestions": {
-      "snoozeTitle": "Snooze",
-      "discardTitle": "Discard",
-      "acceptTitle": "Accept"
-    },
-    "callModal": {
-      "openDialerTitle": "Open in dialer",
-      "openDialerAriaLabel": "Open in dialer",
-      "titlePlaceholder": "Ex: Follow-up call",
-      "notesPlaceholder": "What was discussed? Next steps?"
-    },
-    "messageComposer": {
-      "subjectPlaceholder": "Ex: Next steps",
-      "copySubjectTitle": "Copy subject",
-      "subjectCopied": "Subject copied",
-      "rewriteWithAITitle": "Rewrite with AI using cockpit context"
-    },
-    "scriptEditor": {
-      "titlePlaceholder": "Ex: Proposal Follow-up",
-      "scriptPlaceholder": "Hi {name}! 👋\n\nWrite your message here...\n\nUse {name} and {company} as variables.",
-      "noPreview": "No text to preview..."
     }
   }
 }

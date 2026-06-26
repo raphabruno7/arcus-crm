@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { getErrorMessage } from '@/lib/utils/errorUtils'
@@ -111,6 +112,15 @@ export default function LoginPage() {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
+                        </div>
+
+                        <div className="flex justify-end -mt-3">
+                            <Link
+                                href="/forgot-password"
+                                className="text-sm text-primary-600 hover:text-primary-500 transition-colors"
+                            >
+                                {t('forgotPassword')}
+                            </Link>
                         </div>
 
                         {error && (
