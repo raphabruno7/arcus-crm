@@ -14,7 +14,7 @@ import { RegistryIndex, JourneyDefinition } from '@/types';
  * URL base do repositório de templates no GitHub.
  * @constant
  */
-const REGISTRY_BASE_URL = 'https://raw.githubusercontent.com/thaleslaray/crm-templates/main';
+const REGISTRY_BASE_URL = 'https://raw.githubusercontent.com/raphabruno7/crm-templates/main';
 
 /**
  * Busca o índice de templates disponíveis.
