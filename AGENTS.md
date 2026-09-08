@@ -1,4 +1,4 @@
-# AGENTS.md — NossoCRM
+# AGENTS.md — Arcus CRM
 
 ## Commands
 - **Dev**: `npm run dev`

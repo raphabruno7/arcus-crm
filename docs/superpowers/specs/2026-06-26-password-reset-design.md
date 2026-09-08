@@ -1,7 +1,7 @@
 # Fluxo de Reset de Password — Design
 
 **Data:** 2026-06-26
-**Repo:** raphabruno7/arcus-crm (fork de thaleslaray/nossocrm)
+**Repo:** raphabruno7/arcus-crm
 **Estado atual:** A app não tem qualquer fluxo de recuperação de password. O `/login` só
 faz `signInWithPassword`. O `/auth/callback` só trata do flow OAuth (`?code=`), não do
 recovery. Não existe link "Esqueci a senha" nem página para definir nova senha. A única
@@ -85,8 +85,8 @@ com o login existente, que já usa "Senha".
 ## Config manual no Supabase (fora do código — o utilizador faz)
 
 - Authentication → URL Configuration → Redirect URLs → adicionar:
-  `https://nossocrm-two-theta.vercel.app/reset-password`
-- Site URL já está correto (`https://nossocrm-two-theta.vercel.app`)
+  `https://arcus-crm-two-theta.vercel.app/reset-password`
+- Site URL já está correto (`https://arcus-crm-two-theta.vercel.app`)
 
 Sem este passo, o link do email é rejeitado pelo Supabase (redirect não permitido).
 

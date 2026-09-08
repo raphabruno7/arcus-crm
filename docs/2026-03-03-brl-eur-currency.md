@@ -1,7 +1,7 @@
 # Resumo (2026-03-03) — Moeda BRL/EUR por Board + Deploy
 
 ## Objetivo
-Adicionar suporte a **BRL** e **EUR** no NossoCRM, permitindo operar **Brasil** e **Portugal** ao mesmo tempo, com a moeda definida **por board/pipeline** (sem conversão).
+Adicionar suporte a **BRL** e **EUR** no Arcus CRM, permitindo operar **Brasil** e **Portugal** ao mesmo tempo, com a moeda definida **por board/pipeline** (sem conversão).
 
 ## O que foi feito no código
 - Modelo: **moeda por board/pipeline** (ex.: “Brasil” = BRL, “Portugal” = EUR).
